@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>폴리볼 월드컵 그룹 대항 랭킹전 — 기능 정의서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#172334;
+    --ink-soft:#2c3a4d;
+    --paper:#F4F2EC;
+    --card:#FBFAF6;
+    --gold:#B98A2E;
+    --gold-soft:#E7D9B6;
+    --win:#2C8367;
+    --loss:#BD5849;
+    --line:#DAD5C8;
+    --line-soft:#E8E4D9;
+    --muted:#6E6B61;
+    --navy:#1B2A3E;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-0.01em;
+  }
+  .num{font-family:"Space Grotesk",monospace;font-feature-settings:"tnum";}
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:72px 0 48px;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;
+    display:flex;align-items:center;gap:12px;margin-bottom:22px;
+  }
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  h1.title{
+    font-size:clamp(2.1rem,5.4vw,3.3rem);
+    line-height:1.12;font-weight:800;letter-spacing:-0.03em;
+    margin-bottom:18px;
+  }
+  h1.title em{font-style:normal;color:var(--gold);}
+  .lede{font-size:1.06rem;color:var(--ink-soft);max-width:62ch;}
+  .meta{
+    margin-top:30px;display:flex;flex-wrap:wrap;gap:8px 26px;
+    font-size:.82rem;color:var(--muted);
+  }
+  .meta b{color:var(--ink);font-weight:600;}
+
+  /* ---------- SCOREBOARD SIGNATURE ---------- */
+  .board{
+    margin:38px 0 4px;background:var(--navy);color:#F4F2EC;
+    border-radius:14px;overflow:hidden;
+    box-shadow:0 18px 40px -22px rgba(23,35,52,.6);
+  }
+  .board-top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .board-top .side{font-weight:700;font-size:1.02rem;}
+  .board-top .vs{
+    font-family:"Space Grotesk";font-size:.7rem;letter-spacing:.2em;
+    color:var(--gold-soft);text-transform:uppercase;
+  }
+  .board-body{display:grid;grid-template-columns:1fr auto;}
+  .roster{padding:16px 24px;}
+  .roster .row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);
+    font-size:.92rem;
+  }
+  .roster .row:last-child{border-bottom:0;}
+  .roster .row .who{color:#D7DEE8;}
+  .roster .row .res{font-family:"Space Grotesk";font-weight:600;display:flex;gap:10px;align-items:center;}
+  .roster .pts{color:#9fb0c4;font-size:.84rem;}
+  .tick{font-size:.86rem;}
+  .tick.w{color:#4FC79E;}
+  .tick.l{color:#E8897B;}
+  .verdict{
+    background:rgba(255,255,255,.04);
+    border-left:1px solid rgba(255,255,255,.12);
+    padding:20px 24px;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;min-width:184px;
+  }
+  .verdict .big{font-family:"Space Grotesk";font-size:2.6rem;font-weight:700;line-height:1;color:#fff;}
+  .verdict .big small{font-size:1.1rem;color:#9fb0c4;}
+  .verdict .label{font-size:.78rem;color:#9fb0c4;margin:8px 0 14px;}
+  .verdict .pass{
+    background:var(--gold);color:#23170a;font-weight:700;font-size:.82rem;
+    padding:7px 14px;border-radius:999px;letter-spacing:.02em;
+  }
+  .board-cap{font-size:.8rem;color:var(--muted);margin:14px 2px 0;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:46px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;}
+  .sec-num{font-family:"Space Grotesk";font-size:.95rem;font-weight:700;color:var(--gold);padding-top:4px;}
+  h2{font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;}
+  .sec-sub{color:var(--muted);font-size:.92rem;margin-top:3px;}
+
+  p{margin-bottom:14px;color:var(--ink-soft);}
+  p.tight{margin-bottom:0;}
+  strong{color:var(--ink);font-weight:700;}
+
+  /* status chips */
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:.72rem;font-weight:700;letter-spacing:.02em;
+    padding:3px 10px;border-radius:999px;vertical-align:middle;
+  }
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;}
+  .chip.fix{background:#E4EFE9;color:#1f6e54;}
+  .chip.fix::before{background:var(--win);}
+  .chip.open{background:#F6E6D9;color:#a4502f;}
+  .chip.open::before{background:var(--loss);}
+  .chip.reuse{background:#E5E9F2;color:#3a4f73;}
+  .chip.reuse::before{background:#3a4f73;}
+
+  /* decided cards */
+  .grid{display:grid;gap:14px;}
+  .card{
+    background:var(--card);border:1px solid var(--line-soft);
+    border-radius:11px;padding:18px 20px;
+  }
+  .card h3{font-size:1.02rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:9px;}
+  .card h3 .k{font-family:"Space Grotesk";color:var(--gold);font-size:.8rem;font-weight:600;}
+  .card p{font-size:.93rem;margin:0;color:var(--ink-soft);}
+
+  /* market table */
+  .mkt{width:100%;border-collapse:collapse;margin-top:6px;font-size:.93rem;}
+  .mkt th,.mkt td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  .mkt th{font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;background:rgba(0,0,0,.015);}
+  .mkt td:first-child{font-weight:700;white-space:nowrap;color:var(--ink);}
+  .mkt .q{color:var(--gold);font-weight:700;}
+
+  /* ranking scoring strip */
+  .pts-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px;}
+  .pts-strip .b{
+    background:var(--card);border:1px solid var(--line-soft);border-radius:10px;
+    padding:14px;text-align:center;
+  }
+  .pts-strip .b .v{font-family:"Space Grotesk";font-size:1.5rem;font-weight:700;color:var(--ink);}
+  .pts-strip .b .c{font-size:.74rem;color:var(--muted);margin-top:2px;}
+  .pts-strip .b.hot{border-color:var(--gold-soft);background:#FBF4E4;}
+
+  /* formula box */
+  .formula{
+    background:var(--navy);color:#F4F2EC;border-radius:12px;
+    padding:22px 24px;margin:14px 0;
+  }
+  .formula .eq{font-family:"Space Grotesk";font-size:1.15rem;font-weight:600;color:#fff;letter-spacing:.01em;}
+  .formula .ex{font-size:.86rem;color:#9fb0c4;margin-top:10px;line-height:1.6;}
+  .formula .ex b{color:var(--gold-soft);font-weight:700;}
+
+  /* MVP scope two-col */
+  .scope{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .scope .col{border-radius:11px;padding:18px 20px;border:1px solid var(--line-soft);}
+  .scope .col.in{background:#EFF5F1;border-color:#CFE3D7;}
+  .scope .col.out{background:#F6ECE8;border-color:#E8D2C9;}
+  .scope .col h3{font-size:.95rem;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .scope ul{list-style:none;}
+  .scope li{font-size:.9rem;padding:5px 0;padding-left:22px;position:relative;color:var(--ink-soft);}
+  .scope .in li::before{content:"✓";position:absolute;left:0;color:var(--win);font-weight:800;}
+  .scope .out li::before{content:"✕";position:absolute;left:0;color:var(--loss);font-weight:800;}
+  .scope .out li s{color:var(--muted);text-decoration:none;}
+
+  .pull{
+    border-left:3px solid var(--gold);background:#FBF4E4;
+    padding:14px 18px;border-radius:0 8px 8px 0;margin:18px 0;
+    font-size:.95rem;color:var(--ink-soft);
+  }
+  .pull strong{color:var(--ink);}
+
+  /* flow steps */
+  .flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px;}
+  .flow .step{background:var(--card);border:1px solid var(--line-soft);border-radius:11px;padding:18px 20px;}
+  .flow .step .tg{font-family:"Space Grotesk";font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+  .flow .step h3{font-size:1.05rem;font-weight:800;margin:4px 0 8px;}
+  .flow .step p{font-size:.9rem;margin:0;color:var(--ink-soft);}
+  .flow .step .seq{margin-top:10px;font-size:.84rem;color:var(--muted);line-height:1.7;}
+
+  /* timeline */
+  .tl{list-style:none;margin-top:8px;}
+  .tl li{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line-soft);align-items:baseline;}
+  .tl li:last-child{border-bottom:0;}
+  .tl .d{font-family:"Space Grotesk";font-weight:700;color:var(--ink);min-width:96px;font-size:.92rem;}
+  .tl .t{font-size:.93rem;color:var(--ink-soft);}
+  .tl .t b{color:var(--ink);}
+  .tl .pill{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:8px;}
+  .pill.go{background:#E4EFE9;color:#1f6e54;}
+  .pill.hard{background:#F6E6D9;color:#a4502f;}
+
+  /* decision checklist */
+  .decide{counter-reset:dq;}
+  .dq{
+    display:grid;grid-template-columns:auto 1fr;gap:16px;
+    padding:16px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .dq:last-child{border-bottom:0;}
+  .dq .n{
+    counter-increment:dq;font-family:"Space Grotesk";font-weight:700;
+    background:var(--ink);color:#fff;width:30px;height:30px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-size:.9rem;
+  }
+  .dq .n::before{content:counter(dq);}
+  .dq .q{font-weight:700;font-size:1rem;margin-bottom:3px;}
+  .dq .o{font-size:.9rem;color:var(--muted);}
+  .dq .o b{color:var(--gold);font-weight:700;}
+
+  footer{padding:40px 0 64px;color:var(--muted);font-size:.82rem;}
+  footer .line{height:1px;background:var(--line);margin-bottom:20px;}
+
+  @media (max-width:680px){
+    .wrap{padding:0 20px;}
+    header.hero{padding:48px 0 36px;}
+    .board-body{grid-template-columns:1fr;}
+    .verdict{border-left:0;border-top:1px solid rgba(255,255,255,.12);flex-direction:row;gap:18px;justify-content:space-between;}
+    .verdict .big{font-size:2rem;}
+    .pts-strip{grid-template-columns:repeat(2,1fr);}
+    .sec-head{flex-direction:column;gap:4px;}
+    .scope,.flow{grid-template-columns:1fr;}
+    .mkt thead{display:none;}
+    .mkt td{display:block;border:0;padding:3px 0;}
+    .mkt tr{display:block;padding:14px 0;border-bottom:1px solid var(--line-soft);}
+    .mkt td:first-child{font-size:1rem;}
+    .grid[style]{grid-template-columns:1fr !important;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .board,.card,.opt,.step{animation:rise .6s cubic-bezier(.2,.7,.3,1) both;}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Polyball · World Cup 2026 · 기능 정의서 (MVP)</div>
+    <h1 class="title">월드컵 토너먼트<br><em>그룹 대항 랭킹전</em></h1>
+    <p class="lede">유저들이 5인 팀을 이뤄 월드컵 토너먼트(32강~결승)를 예측하고, <strong>팀 랭킹</strong>과 <strong>팀 내 개인 순위</strong> 두 축으로 보상을 받는 콘텐츠. 6/29 첫 경기 오픈을 목표로, 기존 개인 랭킹전 인프라를 최대한 재활용해 1주일 안에 개발 가능한 범위로 확정한 안.</p>
+    <div class="meta">
+      <span><b>작성일</b> 2026.6.16</span>
+      <span><b>용도</b> 개발 착수용 기능 정의서</span>
+      <span><b>개발 완료 목표</b> 6/25(목)</span>
+      <span><b>오픈</b> 6/29(월) 04:00 · 32강 1경기</span>
+    </div>
+
+    <!-- SIGNATURE SCOREBOARD -->
+    <div class="board" role="img" aria-label="팀 랭킹 점수판 예시">
+      <div class="board-top">
+        <span class="side">우리 팀 · 직관각 5인방</span>
+        <span class="vs">Team Ranking</span>
+        <span class="side">전체 312팀</span>
+      </div>
+      <div class="board-body">
+        <div class="roster">
+          <div class="row"><span class="who">나</span><span class="res"><span class="pts num">480</span><span class="tick w">예측 완료</span></span></div>
+          <div class="row"><span class="who">김OO</span><span class="res"><span class="pts num">530</span><span class="tick w">예측 완료</span></span></div>
+          <div class="row"><span class="who">이OO</span><span class="res"><span class="pts num">350</span><span class="tick w">예측 완료</span></span></div>
+          <div class="row"><span class="who">박OO</span><span class="res"><span class="pts num">200</span><span class="tick l">미예측</span></span></div>
+          <div class="row"><span class="who">최OO (자동배정)</span><span class="res"><span class="pts num">0</span><span class="tick l">미참여</span></span></div>
+        </div>
+        <div class="verdict">
+          <div class="big"><span class="num">312</span></div>
+          <div class="label">팀 점수 = (480+530+350+200+0) ÷ 5<br>= <b class="num">1,560 ÷ 5</b></div>
+          <div class="pass">현재 7위 / 312팀</div>
+        </div>
+      </div>
+    </div>
+    <p class="board-cap">※ 팀 점수 = 팀원 5인 누적 점수의 합 ÷ 5(고정 정원). 미참여자는 0점으로 계산되어 팀 평균을 끌어내림 → "일단 참여하라"는 압력이 구조적으로 생김. 인원수 차이 문제를 정원 고정으로 제거.</p>
+  </header>
+
+  <!-- 1. 한눈에 보기 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><div><h2>한눈에 보기</h2><div class="sec-sub">이번 MVP의 뼈대 · 기존 자산 재활용 · 제외 항목</div></div></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;">
+      <div class="card">
+        <h3><span class="chip fix">확정 방향</span></h3>
+        <p>5인 고정 팀 · 토너먼트 진출팀 예측 · 라운드별 노출 · 경기 시작 전까지 수정 가능 · 팀 점수 = 합÷5 · 팀 랭킹 + 팀 내 개인 순위 2축 보상 · 미참여자 0점/보상 제외.</p>
+      </div>
+      <div class="card">
+        <h3><span class="chip reuse">기존 자산 재활용</span></h3>
+        <p>개인 랭킹전 <strong>예측·채점 로직</strong>(검증 완료) · 어드민 <strong>마켓 등록</strong> · <strong>수동 정산</strong> · 기존 <strong>커뮤니티</strong>(팀원 모집글 용도). 신규 개발 최소화의 핵심.</p>
+      </div>
+      <div class="card">
+        <h3><span class="chip open">추후 확정</span></h3>
+        <p><strong>보상 지급량</strong>(예산 별도) · 팀 내 차등 단계 수 · 동점/최소 참여 기준값 · 푸시 적용 여부.</p>
+      </div>
+      <div class="card">
+        <h3><span class="chip open">v2 이월 (이번 제외)</span></h3>
+        <p>레퍼럴 보상 · 라운드별 미니 랭킹/보상 · 팀 채팅·엠블럼 · 별도 팀원 모집 탭 · 정확스코어 보너스.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 설계 원칙 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><div><h2>설계 원칙</h2><div class="sec-sub">왜 이 구조로 좁혔는가</div></div></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;">
+      <div class="card"><h3>정원 고정으로 공정성 확보</h3><p>인원수가 다르면 평균·합산·상위N 등 무엇을 써도 형평성 시비가 남는다. <strong>5인 고정</strong>으로 분모를 통일해 점수 산식을 한 줄로 단순화.</p></div>
+      <div class="card"><h3>미참여 = 0점, 무임승차 차단</h3><p>팀 점수를 "참여자 평균"이 아니라 "정원 5 기준 평균"으로 둬 미참여자가 팀에 손해를 준다. "잘하는 사람만 참여" 역설을 구조적으로 제거.</p></div>
+      <div class="card"><h3>라운드별 노출 → 재방문 루프</h3><p>전 경기를 한 번에 깔면 원앤던으로 재방문이 죽는다. 그 라운드 경기만 노출하되, <strong>경기 시작 전까지 수정 가능</strong>하게 해 리텐션을 만든다.</p></div>
+      <div class="card"><h3>2축 동기 — 팀 + 개인</h3><p>팀 랭킹(협력·바이럴)과 팀 내 순위(개인 기여)를 동시에 보상해, 강팀 묻어가기와 혼자만 잘하기를 둘 다 막는다.</p></div>
+    </div>
+  </section>
+
+  <!-- 3. 팀 구성 & 참여 방식 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><div><h2>팀 구성 &amp; 참여 방식 <span class="chip fix">확정</span></h2><div class="sec-sub">진입은 단 2갈래 — 만들거나, 들어가거나</div></div></div>
+    <div class="flow">
+      <div class="step">
+        <div class="tg">진입 ①</div>
+        <h3>팀원을 모집할게요</h3>
+        <p><strong>새 팀 생성 + 초대 링크 발급.</strong> 친구에게 링크/코드를 공유해 5인을 채운다. 마감까지 미달이면 자동 배정으로 보충(선택).</p>
+        <div class="seq">팀 생성 → 초대 링크 공유 → 친구 가입 → (미달 시) 자동 충원 → 5인 완성</div>
+      </div>
+      <div class="step">
+        <div class="tg">진입 ②</div>
+        <h3>랜덤 팀에 참여할게요</h3>
+        <p><strong>정원이 빈 기존 팀에 자동 배정.</strong> 유저는 팀을 고르지 않고, 시스템이 빈자리에 넣어 5인을 맞춘다. 친구가 없어도 즉시 참여.</p>
+        <div class="seq">랜덤 참여 선택 → 대기열 → 빈 팀에 자동 배정 → 팀 확인</div>
+      </div>
+    </div>
+    <table class="mkt" style="margin-top:18px;">
+      <thead><tr><th>항목</th><th>규칙</th></tr></thead>
+      <tbody>
+        <tr><td>팀 정원</td><td>5인 고정</td></tr>
+        <tr><td>팀원 모집 채널</td><td>초대 링크/코드 + 기존 커뮤니티 모집글(신규 탭 개발 없음)</td></tr>
+        <tr><td>구성 마감 (Lock)</td><td>32강 1경기 킥오프(6/29 04:00) 시점에 멤버 확정, 이후 변경 불가</td></tr>
+        <tr><td>자동 충원/배정 시점</td><td>킥오프 전 일괄 배치 (정원 5 − 현재 인원만큼 채움)</td></tr>
+        <tr><td>탈퇴</td><td>가능하되 해당 멤버 점수는 0점 처리 (팀 분모는 5 유지)</td></tr>
+      </tbody>
+    </table>
+    <div class="pull"><strong>개발 메모:</strong> 자동 배정은 별도 매칭 알고리즘 없이 <strong>선착순 배치 스크립트</strong>로 충분(빈 팀에 대기 유저를 순서대로 채움). 성향 매칭·솔로 큐 고도화는 v2.</div>
+  </section>
+
+  <!-- 4. 예측 마켓 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><div><h2>예측 마켓 <span class="chip fix">확정</span> <span class="chip reuse">로직 재활용</span></h2><div class="sec-sub">토너먼트는 "진출팀" 2택으로 모호함 제거</div></div></div>
+    <table class="mkt">
+      <thead><tr><th>대상</th><th>질문 형식</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>토너먼트 (32강~결승)</td>
+          <td><span class="q">다음 라운드에 진출할 팀은?</span> (2택)</td>
+          <td>승/무/패가 아니라 "최종 진출팀". 연장·승부차기까지 가도 올라간 팀이 정답 → 토너먼트 모호함 제거. 정확스코어 보너스는 이번 제외.</td>
+        </tr>
+        <tr>
+          <td>노출 방식</td>
+          <td>라운드별 일괄 오픈</td>
+          <td>해당 라운드 경기만 노출. 경기 시작 전까지 자유 수정, 킥오프 시 해당 경기 자동 Lock.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pull"><strong>마켓 등록:</strong> 어드민의 기존 마켓 등록 기능으로 경기를 사전 등록. 결과 입력·정산도 기존 수동 정산 기능 사용.</div>
+  </section>
+
+  <!-- 5. 점수 & 랭킹 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><div><h2>점수 &amp; 랭킹 산정</h2><div class="sec-sub">개인 점수는 기존 모델 그대로, 팀 점수만 신규</div></div></div>
+
+    <p><strong>개인 점수</strong> <span class="sec-sub" style="display:inline;">(개인 랭킹전과 동일 · 검증 완료)</span> — 적중 시 기본 100점, 선택률이 낮은(소수가 고른) 항목을 맞힐수록 가점. "남들 안 고른 걸 맞혔다"는 안목을 보상.</p>
+    <div class="pts-strip">
+      <div class="b"><div class="v num">100</div><div class="c">적중</div></div>
+      <div class="b"><div class="v num">150</div><div class="c">선택률 30% 미만</div></div>
+      <div class="b"><div class="v num">180</div><div class="c">선택률 20% 미만</div></div>
+      <div class="b hot"><div class="v num">200</div><div class="c">선택률 10% 미만</div></div>
+    </div>
+
+    <p style="margin-top:24px;"><strong>팀 점수</strong> — 팀원 5인의 누적 점수 합을 정원 5로 나눈 값.</p>
+    <div class="formula">
+      <div class="eq">팀 점수 = ( 팀원 5인의 누적 점수 합 ) ÷ 5</div>
+      <div class="ex">예) 팀원 점수 <b>480 · 530 · 350 · 200 · 0</b> → 합 1,560 ÷ 5 = <b>312점</b><br>미참여자(0점)도 분모 5에 포함 → 참여하지 않으면 팀 평균이 깎인다.</div>
+    </div>
+
+    <table class="mkt" style="margin-top:18px;">
+      <thead><tr><th>랭킹</th><th>기준</th><th>용도</th></tr></thead>
+      <tbody>
+        <tr><td>누적 팀 랭킹</td><td>팀 점수 내림차순</td><td>팀 보상의 기준 (메인 경쟁)</td></tr>
+        <tr><td>팀 내 개인 랭킹</td><td>같은 팀 내 개인 누적 점수 내림차순</td><td>개인 보상의 기준 (팀 내 기여)</td></tr>
+      </tbody>
+    </table>
+    <div class="pull"><strong>갱신 방식:</strong> 실시간 아님. <strong>경기 결과 입력 → 점수 재계산 → 랭킹 갱신</strong> 배치로 처리(정확성 우선). 라운드별 미니 랭킹/보상은 이번 제외.</div>
+  </section>
+
+  <!-- 6. 보상 구조 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><div><h2>보상 구조 (2축) <span class="chip open">지급량 추후</span></h2><div class="sec-sub">"누가·어떤 단계로 받는가"의 뼈대. 금액·수량은 예산 확정 후</div></div></div>
+    <table class="mkt">
+      <thead><tr><th>축</th><th>대상</th><th>지급(안)</th></tr></thead>
+      <tbody>
+        <tr><td>팀 보상</td><td>최종 누적 팀 랭킹 상위</td><td>팀 순위 구간별 차등 (1위 / 2~3위 / 4~10위 / 상위 % …)</td></tr>
+        <tr><td>개인 보상</td><td>팀 내 개인 순위 상위</td><td>팀 내 1위(MVP) 추가 보상 (+ 상위권 차등은 단계 수에 따라)</td></tr>
+        <tr><td>제외</td><td>예측 0회 / 최소 참여 미달</td><td><span class="q">보상 없음</span> — 무임승차·휴면 차단</td></tr>
+      </tbody>
+    </table>
+    <div class="pull"><strong>예산 연동:</strong> 팀 랭킹전 가용 재원은 개인 랭킹전 안에 따라 가변(약 65~80만 원 선 논의). 구체 지급량·응모 보상은 별도 보상안에서 확정.</div>
+  </section>
+
+  <!-- 7. MVP 범위 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><div><h2>MVP 기능 범위 <span class="chip fix">가지치기 결과</span></h2><div class="sec-sub">6/25 개발 완료 기준으로 확정한 포함/제외</div></div></div>
+    <div class="scope">
+      <div class="col in">
+        <h3>포함 — 반드시 (6/25)</h3>
+        <ul>
+          <li>팀 생성 / 초대 링크·코드 가입</li>
+          <li>참여 진입 2갈래 (모집 / 랜덤 배정)</li>
+          <li>5인 정원 제한 · 킥오프 시 Lock</li>
+          <li>경기 예측(진출팀) · 시작 전 수정</li>
+          <li>점수 계산(개인 모델 재활용)</li>
+          <li>팀 점수(합÷5) · 누적 팀 랭킹</li>
+          <li>팀 내 개인 랭킹</li>
+          <li>팀 페이지(팀원·점수·예측현황)</li>
+          <li>자동 충원/배정 배치</li>
+          <li>어드민: 결과 입력·점수/랭킹 재계산</li>
+          <li>보상 대상 추출(미참여 제외)</li>
+        </ul>
+      </div>
+      <div class="col out">
+        <h3>제외 — v2 이월</h3>
+        <ul>
+          <li><s>레퍼럴 응모권/보상</s> 정산 복잡</li>
+          <li><s>라운드별 미니 랭킹·보상</s></li>
+          <li><s>별도 "팀원 모집" 탭</s> 커뮤니티로 대체</li>
+          <li><s>정교한 성향 매칭</s> 선착순으로</li>
+          <li><s>팀 채팅방</s> 별도 제품 수준</li>
+          <li><s>팀 엠블럼/로고/아이덴티티</s></li>
+          <li><s>정확스코어 보너스</s> 기준 모호</li>
+          <li><s>실시간 라이브 리더보드</s></li>
+          <li><s>푸시 다종</s> (1종만 선택 포함)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 운영 규칙 & 엣지 케이스 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><div><h2>운영 규칙 &amp; 엣지 케이스 <span class="chip open">기준값 결정 필요</span></h2><div class="sec-sub">빠지면 개발·정산에서 막히는 것들</div></div></div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;">
+      <div class="card"><h3>미참여자 처리</h3><p>예측 0건 멤버는 <strong>0점 + 보상 제외</strong>. 보상 자격 최소 참여(전체 경기의 N% 이상) 기준값은 회의에서 확정.</p></div>
+      <div class="card"><h3>동점 처리</h3><p>팀 동점·팀 내 개인 동점의 tiebreak 규칙 필요(예: 참여 경기 수 → 소수픽 적중 수 → 제출 시각).</p></div>
+      <div class="card"><h3>예측 마감 정확도</h3><p>각 경기 <strong>킥오프 정시 자동 Lock</strong>. 마감 후 제출/수정 불가. 대량 동시 제출 트랜잭션 처리.</p></div>
+      <div class="card"><h3>결과 정정·롤백</h3><p>결과 오입력 시 수정 후 <strong>재계산 버튼</strong>으로 점수·랭킹 일괄 갱신(멱등).</p></div>
+      <div class="card"><h3>어뷰징 방지</h3><p>자동 배정+보상 구조라 <strong>다계정 5인 팀</strong> 차단 장치 필요(기존 계정 인증 재사용).</p></div>
+      <div class="card"><h3>푸시 (선택 1종)</h3><p>여력 시 "오늘 경기 미예측" 1종만. 어려우면 앱 내 배너로 대체.</p></div>
+    </div>
+  </section>
+
+  <!-- 9. 일정 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">09</span><div><h2>일정 &amp; 개발 로드맵</h2><div class="sec-sub">오늘 기준 6/16 · 첫 경기 6/29 04:00</div></div></div>
+    <ul class="tl">
+      <li><span class="d num">6/17~18</span><span class="t">정책·DB 설계 확정, 팀/예측/점수 산식 픽스 <span class="pill go">P0</span></span></li>
+      <li><span class="d num">6/19~20</span><span class="t">팀 생성/초대, 참여 2갈래, 예측 제출·수정 <span class="pill go">P0</span></span></li>
+      <li><span class="d num">6/21~22</span><span class="t">점수·팀점수·랭킹 계산, 팀 페이지 <span class="pill go">P0</span></span></li>
+      <li><span class="d num">6/23</span><span class="t">자동 배정 배치, 어드민 결과입력·재계산·보상추출 <span class="pill go">P0</span></span></li>
+      <li><span class="d num">6/24</span><span class="t">QA — 마감 타이밍·동시성·재계산·정렬 테스트 <span class="pill hard">필수</span></span></li>
+      <li><span class="d num">6/25</span><span class="t"><b>개발 완료 / 배포 · 더미 리허설</b> <span class="pill go">목표</span></span></li>
+      <li><span class="d num">6/26~28</span><span class="t">사전 모객 — 팀 생성·초대 유도, 운영 모니터링</span></li>
+      <li><span class="d num">6/29 04:00</span><span class="t"><b>32강 1경기 — 오픈 / Lock 시작</b> <span class="pill hard">D-DAY</span></span></li>
+      <li><span class="d num">7/19</span><span class="t">결승 → 종료 후 최종 정산</span></li>
+    </ul>
+  </section>
+
+  <!-- 10. 결정 필요 -->
+  <section style="border-bottom:0;">
+    <div class="sec-head"><span class="sec-num">10</span><div><h2>회의에서 정할 것</h2><div class="sec-sub">이 값들이 채워지면 개발 착수 가능</div></div></div>
+    <div class="decide">
+      <div class="dq"><div class="n"></div><div><div class="q">팀 정원 5인 확정?</div><div class="o">자동 배정 전제. 10인은 결성 허들·충원 의존도가 커 <b>5인 권장</b></div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">보상 차등 단계 · 지급량</div><div class="o">팀 순위 구간 · 팀 내 차등 단계 수 · 확정/추첨 비율 (예산 별도 확정)</div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">최소 참여 / 동점 기준값</div><div class="o">보상 자격 <b>최소 N% 참여</b> · 팀/개인 <b>tiebreak</b> 우선순위</div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">자동 충원·배정 규칙</div><div class="o">대상 필터(휴면 제외 등) · 충원 시점 · 거부 허용 여부</div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">푸시 적용 여부</div><div class="o">"오늘 경기 미예측" 1종 포함 vs 배너 대체</div></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="line"></div>
+    폴리볼 월드컵 토너먼트 그룹 대항 랭킹전 · 기능 정의서(MVP) · 내부용 · 2026.6.16<br>
+    표기된 보상 수치·기준값은 회의에서 확정 예정. 본 안은 6/25 개발 완료 · 6/29 오픈을 전제로 기존 인프라 재활용 범위에서 정리한 실행안입니다.
+  </footer>
+
+</div>
+</body>
+</html>
