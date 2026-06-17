@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -274,7 +275,7 @@
           <div class="row"><span class="who">김OO</span><span class="res"><span class="pts num">530</span><span class="tick w">예측 완료</span></span></div>
           <div class="row"><span class="who">이OO</span><span class="res"><span class="pts num">350</span><span class="tick w">예측 완료</span></span></div>
           <div class="row"><span class="who">박OO</span><span class="res"><span class="pts num">200</span><span class="tick l">미예측</span></span></div>
-          <div class="row"><span class="who">최OO (자동배정)</span><span class="res"><span class="pts num">0</span><span class="tick l">미참여</span></span></div>
+          <div class="row"><span class="who">최OO</span><span class="res"><span class="pts num">0</span><span class="tick l">미참여</span></span></div>
         </div>
         <div class="verdict">
           <div class="big"><span class="num">312</span></div>
@@ -292,11 +293,11 @@
     <div class="grid" style="grid-template-columns:1fr 1fr;">
       <div class="card">
         <h3><span class="chip fix">확정 방향</span></h3>
-        <p>5인 고정 팀 · 토너먼트 진출팀 예측 · 라운드별 노출 · 경기 시작 전까지 수정 가능 · 팀 점수 = 합÷5 · 팀 랭킹 + 팀 내 개인 순위 2축 보상 · 미참여자 0점/보상 제외.</p>
+        <p>최대 5인 <strong>친구 초대</strong> 팀 · 토너먼트 진출팀 예측 · 라운드별 노출 · 경기 시작 전까지 수정 가능 · 팀 점수 = 합÷5 · 팀 랭킹(볼) + 팀 내 순위(네이버페이) 2축 보상 · 미참여자 0점/보상 제외.</p>
       </div>
       <div class="card">
         <h3><span class="chip reuse">기존 자산 재활용</span></h3>
-        <p>개인 랭킹전 <strong>예측·채점 로직</strong>(검증 완료) · 어드민 <strong>마켓 등록</strong> · <strong>수동 정산</strong> · 기존 <strong>커뮤니티</strong>(팀원 모집글 용도). 신규 개발 최소화의 핵심.</p>
+        <p>개인 랭킹전 <strong>예측·채점 로직</strong>(검증 완료) · 어드민 <strong>마켓 등록</strong> · <strong>수동 정산</strong> 기능을 그대로 사용. 신규 개발 최소화의 핵심.</p>
       </div>
       <div class="card">
         <h3><span class="chip open">추후 확정</span></h3>
@@ -304,7 +305,7 @@
       </div>
       <div class="card">
         <h3><span class="chip open">v2 이월 (이번 제외)</span></h3>
-        <p>레퍼럴 보상 · 라운드별 미니 랭킹/보상 · 팀 채팅·엠블럼 · 별도 팀원 모집 탭 · 정확스코어 보너스.</p>
+        <p>레퍼럴 보상 · 라운드별 미니 랭킹/보상 · 팀 채팅·엠블럼 · 랜덤 팀 매칭·자동 배정 · 정확스코어 보너스.</p>
       </div>
     </div>
   </section>
@@ -320,34 +321,20 @@
     </div>
   </section>
 
-  <!-- 3. 팀 구성 & 참여 방식 -->
+  <!-- 3. 팀 구성 -->
   <section>
-    <div class="sec-head"><span class="sec-num">03</span><div><h2>팀 구성 &amp; 참여 방식 <span class="chip fix">확정</span></h2><div class="sec-sub">진입은 단 2갈래 — 만들거나, 들어가거나</div></div></div>
-    <div class="flow">
-      <div class="step">
-        <div class="tg">진입 ①</div>
-        <h3>팀원을 모집할게요</h3>
-        <p><strong>새 팀 생성 + 초대 링크 발급.</strong> 친구에게 링크/코드를 공유해 5인을 채운다. 마감까지 미달이면 자동 배정으로 보충(선택).</p>
-        <div class="seq">팀 생성 → 초대 링크 공유 → 친구 가입 → (미달 시) 자동 충원 → 5인 완성</div>
-      </div>
-      <div class="step">
-        <div class="tg">진입 ②</div>
-        <h3>랜덤 팀에 참여할게요</h3>
-        <p><strong>정원이 빈 기존 팀에 자동 배정.</strong> 유저는 팀을 고르지 않고, 시스템이 빈자리에 넣어 5인을 맞춘다. 친구가 없어도 즉시 참여.</p>
-        <div class="seq">랜덤 참여 선택 → 대기열 → 빈 팀에 자동 배정 → 팀 확인</div>
-      </div>
-    </div>
-    <table class="mkt" style="margin-top:18px;">
+    <div class="sec-head"><span class="sec-num">03</span><div><h2>팀 구성 <span class="chip fix">확정</span></h2><div class="sec-sub">친구 초대로만 구성 · 최대 5인</div></div></div>
+    <table class="mkt">
       <thead><tr><th>항목</th><th>규칙</th></tr></thead>
       <tbody>
-        <tr><td>팀 정원</td><td>5인 고정</td></tr>
-        <tr><td>팀원 모집 채널</td><td>초대 링크/코드 + 기존 커뮤니티 모집글(신규 탭 개발 없음)</td></tr>
+        <tr><td>팀 정원</td><td>최대 5인</td></tr>
+        <tr><td>구성 방식</td><td><strong>친구 초대(링크/코드)로만</strong> 구성 — 랜덤 매칭·자동 배정 없음</td></tr>
+        <tr><td>빈 슬롯 처리</td><td>5인 미달 시 빈 자리는 0점으로 계산(분모 5 고정) → 팀원이 많을수록 유리</td></tr>
         <tr><td>구성 마감 (Lock)</td><td>32강 1경기 킥오프(6/29 04:00) 시점에 멤버 확정, 이후 변경 불가</td></tr>
-        <tr><td>자동 충원/배정 시점</td><td>킥오프 전 일괄 배치 (정원 5 − 현재 인원만큼 채움)</td></tr>
-        <tr><td>탈퇴</td><td>가능하되 해당 멤버 점수는 0점 처리 (팀 분모는 5 유지)</td></tr>
+        <tr><td>탈퇴</td><td>가능하되 해당 멤버 점수는 0점 처리 (분모 5 유지)</td></tr>
       </tbody>
     </table>
-    <div class="pull"><strong>개발 메모:</strong> 자동 배정은 별도 매칭 알고리즘 없이 <strong>선착순 배치 스크립트</strong>로 충분(빈 팀에 대기 유저를 순서대로 채움). 성향 매칭·솔로 큐 고도화는 v2.</div>
+    <div class="pull"><strong>설계 의도:</strong> 자동 배정을 빼면서 개발 범위가 더 줄었다. 분모를 5로 고정해 두면 "친구를 더 데려올수록 팀 점수가 오른다" → 친구 초대 자체가 동기부여가 된다.</div>
   </section>
 
   <!-- 4. 예측 마켓 -->
@@ -401,16 +388,16 @@
 
   <!-- 6. 보상 구조 -->
   <section>
-    <div class="sec-head"><span class="sec-num">06</span><div><h2>보상 구조 (2축) <span class="chip open">지급량 추후</span></h2><div class="sec-sub">"누가·어떤 단계로 받는가"의 뼈대. 금액·수량은 예산 확정 후</div></div></div>
+    <div class="sec-head"><span class="sec-num">06</span><div><h2>보상 구조 (2축) <span class="chip open">지급량 추후</span></h2><div class="sec-sub">재화 종류는 제안 · 금액·수량은 예산 확정 후</div></div></div>
     <table class="mkt">
-      <thead><tr><th>축</th><th>대상</th><th>지급(안)</th></tr></thead>
+      <thead><tr><th>축</th><th>대상</th><th>지급 재화 (제안)</th></tr></thead>
       <tbody>
-        <tr><td>팀 보상</td><td>최종 누적 팀 랭킹 상위</td><td>팀 순위 구간별 차등 (1위 / 2~3위 / 4~10위 / 상위 % …)</td></tr>
-        <tr><td>개인 보상</td><td>팀 내 개인 순위 상위</td><td>팀 내 1위(MVP) 추가 보상 (+ 상위권 차등은 단계 수에 따라)</td></tr>
-        <tr><td>제외</td><td>예측 0회 / 최소 참여 미달</td><td><span class="q">보상 없음</span> — 무임승차·휴면 차단</td></tr>
+        <tr><td>팀 보상</td><td>최종 누적 팀 랭킹 상위 구간</td><td><strong>볼(Ball)</strong> — 팀 순위 구간별 차등 (1위 / 2~3위 / 4~10위 / 상위 % …)</td></tr>
+        <tr><td>개인 보상</td><td>팀 내 개인 순위 상위</td><td><strong>네이버페이 포인트</strong> — 팀 내 순위별 차등 (1위 MVP + 상위권)</td></tr>
+        <tr><td>제외</td><td>예측 0회 / 최소 참여 미달</td><td><span class="q">지급 없음</span> — 무임승차·휴면 차단</td></tr>
       </tbody>
     </table>
-    <div class="pull"><strong>예산 연동:</strong> 팀 랭킹전 가용 재원은 개인 랭킹전 안에 따라 가변(약 65~80만 원 선 논의). 구체 지급량·응모 보상은 별도 보상안에서 확정.</div>
+    <div class="pull"><strong>재화 설계:</strong> 팀 축은 서비스 재화 <strong>볼</strong>로(이긴 팀 수에 비례해 예산 통제 용이), 팀 내 개인 축은 현금성 <strong>네이버페이 포인트</strong>로 차등 지급. 구체 지급량은 별도 보상안에서 예산에 맞춰 확정.</div>
   </section>
 
   <!-- 7. MVP 범위 -->
@@ -420,15 +407,13 @@
       <div class="col in">
         <h3>포함 — 반드시 (6/25)</h3>
         <ul>
-          <li>팀 생성 / 초대 링크·코드 가입</li>
-          <li>참여 진입 2갈래 (모집 / 랜덤 배정)</li>
-          <li>5인 정원 제한 · 킥오프 시 Lock</li>
+          <li>팀 생성 / 친구 초대 링크·코드 가입</li>
+          <li>최대 5인 정원 제한 · 킥오프 시 Lock</li>
           <li>경기 예측(진출팀) · 시작 전 수정</li>
           <li>점수 계산(개인 모델 재활용)</li>
           <li>팀 점수(합÷5) · 누적 팀 랭킹</li>
           <li>팀 내 개인 랭킹</li>
           <li>팀 페이지(팀원·점수·예측현황)</li>
-          <li>자동 충원/배정 배치</li>
           <li>어드민: 결과 입력·점수/랭킹 재계산</li>
           <li>보상 대상 추출(미참여 제외)</li>
         </ul>
@@ -438,8 +423,8 @@
         <ul>
           <li><s>레퍼럴 응모권/보상</s> 정산 복잡</li>
           <li><s>라운드별 미니 랭킹·보상</s></li>
-          <li><s>별도 "팀원 모집" 탭</s> 커뮤니티로 대체</li>
-          <li><s>정교한 성향 매칭</s> 선착순으로</li>
+          <li><s>랜덤 팀 매칭·자동 배정</s> 친구 초대만</li>
+          <li><s>팀원 모집 게시판/커뮤니티 연동</s></li>
           <li><s>팀 채팅방</s> 별도 제품 수준</li>
           <li><s>팀 엠블럼/로고/아이덴티티</s></li>
           <li><s>정확스코어 보너스</s> 기준 모호</li>
@@ -458,7 +443,7 @@
       <div class="card"><h3>동점 처리</h3><p>팀 동점·팀 내 개인 동점의 tiebreak 규칙 필요(예: 참여 경기 수 → 소수픽 적중 수 → 제출 시각).</p></div>
       <div class="card"><h3>예측 마감 정확도</h3><p>각 경기 <strong>킥오프 정시 자동 Lock</strong>. 마감 후 제출/수정 불가. 대량 동시 제출 트랜잭션 처리.</p></div>
       <div class="card"><h3>결과 정정·롤백</h3><p>결과 오입력 시 수정 후 <strong>재계산 버튼</strong>으로 점수·랭킹 일괄 갱신(멱등).</p></div>
-      <div class="card"><h3>어뷰징 방지</h3><p>자동 배정+보상 구조라 <strong>다계정 5인 팀</strong> 차단 장치 필요(기존 계정 인증 재사용).</p></div>
+      <div class="card"><h3>어뷰징 방지</h3><p>보상이 걸린 팀전이라 <strong>한 명이 다계정으로 5인 팀</strong>을 꾸리는 어뷰징 차단 필요(기존 계정 인증 재사용).</p></div>
       <div class="card"><h3>푸시 (선택 1종)</h3><p>여력 시 "오늘 경기 미예측" 1종만. 어려우면 앱 내 배너로 대체.</p></div>
     </div>
   </section>
@@ -470,7 +455,7 @@
       <li><span class="d num">6/17~18</span><span class="t">정책·DB 설계 확정, 팀/예측/점수 산식 픽스 <span class="pill go">P0</span></span></li>
       <li><span class="d num">6/19~20</span><span class="t">팀 생성/초대, 참여 2갈래, 예측 제출·수정 <span class="pill go">P0</span></span></li>
       <li><span class="d num">6/21~22</span><span class="t">점수·팀점수·랭킹 계산, 팀 페이지 <span class="pill go">P0</span></span></li>
-      <li><span class="d num">6/23</span><span class="t">자동 배정 배치, 어드민 결과입력·재계산·보상추출 <span class="pill go">P0</span></span></li>
+      <li><span class="d num">6/23</span><span class="t">어드민 결과입력·점수/랭킹 재계산·보상추출 <span class="pill go">P0</span></span></li>
       <li><span class="d num">6/24</span><span class="t">QA — 마감 타이밍·동시성·재계산·정렬 테스트 <span class="pill hard">필수</span></span></li>
       <li><span class="d num">6/25</span><span class="t"><b>개발 완료 / 배포 · 더미 리허설</b> <span class="pill go">목표</span></span></li>
       <li><span class="d num">6/26~28</span><span class="t">사전 모객 — 팀 생성·초대 유도, 운영 모니터링</span></li>
@@ -483,10 +468,9 @@
   <section style="border-bottom:0;">
     <div class="sec-head"><span class="sec-num">10</span><div><h2>회의에서 정할 것</h2><div class="sec-sub">이 값들이 채워지면 개발 착수 가능</div></div></div>
     <div class="decide">
-      <div class="dq"><div class="n"></div><div><div class="q">팀 정원 5인 확정?</div><div class="o">자동 배정 전제. 10인은 결성 허들·충원 의존도가 커 <b>5인 권장</b></div></div></div>
-      <div class="dq"><div class="n"></div><div><div class="q">보상 차등 단계 · 지급량</div><div class="o">팀 순위 구간 · 팀 내 차등 단계 수 · 확정/추첨 비율 (예산 별도 확정)</div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">팀 정원 최대 5인 확정?</div><div class="o">친구 초대만으로 구성. 빈 슬롯은 0점 처리(분모 5 고정)</div></div></div>
+      <div class="dq"><div class="n"></div><div><div class="q">보상 차등 단계 · 지급량</div><div class="o">팀 순위 구간(<b>볼</b>) · 팀 내 차등 단계(<b>네이버페이</b>) · 지급량 (예산 별도 확정)</div></div></div>
       <div class="dq"><div class="n"></div><div><div class="q">최소 참여 / 동점 기준값</div><div class="o">보상 자격 <b>최소 N% 참여</b> · 팀/개인 <b>tiebreak</b> 우선순위</div></div></div>
-      <div class="dq"><div class="n"></div><div><div class="q">자동 충원·배정 규칙</div><div class="o">대상 필터(휴면 제외 등) · 충원 시점 · 거부 허용 여부</div></div></div>
       <div class="dq"><div class="n"></div><div><div class="q">푸시 적용 여부</div><div class="o">"오늘 경기 미예측" 1종 포함 vs 배너 대체</div></div></div>
     </div>
   </section>
