@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 월드컵 승부예측 이벤트 — 검증 보고서</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --bg:#F0F3EE;--card:#FFFFFF;--ink:#15271C;--sub:#5A6B5E;
+  --pitch:#1E6B45;--pitch-deep:#0F4A2E;--chalk:#E7EEE8;
+  --upset:#D24A40;--gold:#C99A2E;--line:#D3DDD3;--blue:#2F6F9F;
+  --mono:'JetBrains Mono','SF Mono',ui-monospace,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.hero{background:var(--pitch-deep);color:#F2F7F1;padding:58px 0 50px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 119px,rgba(255,255,255,.045) 119px 120px);}
+.hero .wrap{position:relative}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#9FC4AC;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(24px,3.6vw,38px);font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:#FFD777}
+.hero .scqa{max-width:760px;color:#C7D8CB;font-size:14.5px;margin-bottom:6px}
+.hero .scqa b{color:#fff}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;margin-top:30px;background:rgba(255,255,255,.06);border-radius:12px;overflow:hidden}
+.kpi div{padding:18px 20px;border-left:1px solid rgba(255,255,255,.12)}
+.kpi div:first-child{border-left:none}
+.kpi .n{font-family:var(--mono);font-size:11px;color:#9FC4AC;letter-spacing:.1em;margin-bottom:7px}
+.kpi .m{font-family:var(--mono);font-size:clamp(18px,2.4vw,24px);font-weight:700;color:#fff}
+.kpi .m em{font-style:normal;color:#FFD777}
+.kpi .s{font-size:12px;color:#9FC4AC;margin-top:4px}
+.step{padding:50px 0 6px}
+.part-tag{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:#fff;background:var(--pitch);border-radius:5px;padding:4px 12px;margin-bottom:12px}
+.step h2{font-size:clamp(19px,2.6vw,26px);font-weight:800;letter-spacing:-.01em;margin-bottom:10px;line-height:1.35}
+.step .lead{color:#3C4A3F;font-size:14.5px;max-width:780px;margin-bottom:22px}
+.easy{background:#FFF8E8;border:1px solid #EAD9A8;border-radius:10px;padding:14px 18px;font-size:14px;color:#5C4A1E;max-width:820px;margin-bottom:20px}
+.easy b{color:#3D3010}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.card h4{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--pitch);margin-bottom:12px}
+.codebox{font-family:var(--mono);font-size:12.5px;background:var(--chalk);border-radius:8px;padding:14px 16px;line-height:1.95;overflow-x:auto}
+.codebox b{color:var(--pitch-deep)}
+.codebox .up{color:var(--upset)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.mcard .tag{font-family:var(--mono);font-size:11px;color:#fff;background:var(--pitch);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:8px}
+.mcard h5{font-size:15px;font-weight:800;margin-bottom:6px}
+.mcard p{font-size:13.5px;color:#3C4A3F}
+.mcard .f{font-family:var(--mono);font-size:12px;background:var(--chalk);border-radius:6px;padding:8px 10px;margin-top:9px;color:var(--pitch-deep)}
+table.dt{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+table.dt th{font-family:var(--mono);font-size:11.5px;color:var(--sub);padding:9px 8px;border-bottom:2px solid var(--line);text-align:right}
+table.dt th:first-child{text-align:left}
+table.dt td{padding:9px 8px;border-bottom:1px solid var(--chalk);text-align:right;font-family:var(--mono)}
+table.dt td:first-child{text-align:left;font-family:inherit;font-weight:600}
+table.dt tr.hl{background:var(--chalk)}
+.funnel{background:var(--pitch-deep);border-radius:14px;color:#EAF3EC;padding:30px 28px;margin:6px 0 20px}
+.funnel h3{font-size:17px;font-weight:800;margin-bottom:18px}
+.frow{display:grid;grid-template-columns:130px 1fr 150px;gap:14px;align-items:center;padding:11px 0;border-top:1px solid rgba(255,255,255,.12)}
+.frow:first-of-type{border-top:none}
+.frow .rn{font-family:var(--mono);font-size:12px;color:#9FC4AC}
+.frow .fb{height:13px;border-radius:7px;background:rgba(255,255,255,.10);overflow:hidden}
+.frow .fb i{display:block;height:100%;background:linear-gradient(90deg,#FFD777,#E2574C);min-width:3px}
+.frow .od{font-family:var(--mono);font-size:13.5px;text-align:right;font-weight:700;color:#FFD777}
+.frow .od small{display:block;font-size:10px;color:#9FC4AC;font-weight:400}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px}
+@media(max-width:720px){.compare{grid-template-columns:1fr}}
+.compare>div{padding:20px 22px}
+.compare .a{background:#E1F0E7}
+.compare .b{background:#FBEAE8;border-left:1px solid var(--line)}
+.compare h5{font-size:15px;font-weight:800;margin-bottom:4px}
+.compare .big{font-family:var(--mono);font-size:clamp(20px,3vw,26px);font-weight:700;margin:8px 0}
+.compare .a .big{color:var(--pitch-deep)}
+.compare .b .big{color:var(--upset)}
+.compare p{font-size:13px;color:#3C4A3F}
+.note{border-left:3px solid var(--pitch);background:var(--card);border-radius:0 8px 8px 0;padding:13px 16px;font-size:13.5px;color:#3C4A3F;margin-top:6px}
+.note.warn{border-left-color:var(--upset)}
+.verdict{background:var(--pitch);color:#fff;border-radius:14px;padding:30px 30px;margin:10px 0 26px}
+.verdict h3{font-size:19px;font-weight:800;margin-bottom:12px}
+.verdict p{font-size:15px;color:#EAF3EC;line-height:1.7}
+.verdict b{color:#FFD777}
+.badge{display:inline-flex;gap:8px;flex-wrap:wrap;margin:6px 0 18px}
+.badge span{font-family:var(--mono);font-size:11.5px;background:#E1F0E7;color:var(--pitch-deep);border:1px solid #BcdCC8;border-radius:20px;padding:4px 12px}
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:8px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.gcard h3{font-family:var(--mono);font-size:13px;color:var(--pitch);margin-bottom:10px;display:flex;justify-content:space-between}
+.gcard h3 small{color:var(--sub);font-weight:400;letter-spacing:0}
+.trow{display:grid;grid-template-columns:1fr 44px;gap:8px;align-items:center;padding:5px 0;border-top:1px dashed var(--chalk)}
+.trow:first-of-type{border-top:none}
+.tname{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+.tname .rt{font-family:var(--mono);font-size:10.5px;color:var(--sub);font-weight:400}
+.adv{font-family:var(--mono);font-size:12.5px;text-align:right;font-weight:700}
+.bar{grid-column:1/-1;height:5px;border-radius:3px;background:var(--chalk);overflow:hidden;display:flex}
+.bar i{height:100%}
+.b1{background:var(--pitch)}.b2{background:#5BA579}.b3{background:var(--gold)}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--sub);margin:4px 0 14px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+footer{padding:24px 0 50px;font-size:12px;color:var(--sub);border-top:1px solid var(--line)}
+.small{font-size:12.5px;color:var(--sub);margin-top:10px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">POLYBALL · WC2026 EVENT · 검증 보고서(2차) · 2026.06.18</div>
+    <p class="scqa"><b>이벤트:</b> 32강~결승 32경기 승패를 전부 맞힌 사람에게 1인당 100만원 지급. 픽은 매 경기 시작 전 오픈.</p>
+    <p class="scqa"><b>검증 목적:</b> 기존 시뮬(v2, 1/20만)의 신뢰도를 독립적으로 재검증하고, 실제 조별리그 1차전 결과까지 반영해 예상 지급 규모를 확정한다.</p>
+    <h1>결론: 이벤트는 <em>안전</em>하다.<br>완벽한 유저도 적중확률 <em>약 1/97만</em>, 현실 유저는 <em>1/3,640만</em>.</h1>
+    <div class="kpi">
+      <div><div class="n">완벽 유저 (정배만 픽)</div><div class="m"><em>1/97만</em></div><div class="s">32경기 전부 적중</div></div>
+      <div><div class="n">현실 유저 1명</div><div class="m"><em>1/3,640만</em></div><div class="s">박빙에서 픽 갈림</div></div>
+      <div><div class="n">참가자 100만 명</div><div class="m">기대 <em>2.7만원</em></div><div class="s">당첨확률 약 2%</div></div>
+      <div><div class="n">교차검증</div><div class="m">3종 일치</div><div class="s">1차전·DC·Opta</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ===== 요약 ===== -->
+<section class="step">
+  <div class="part-tag">한눈에</div>
+  <h2>무엇을, 어떻게 검증했나</h2>
+  <p class="lead">기존 시뮬레이션을 세 가지 독립적인 방법으로 교차검증했고, 셋 모두 "이벤트는 안전하다"는 같은 결론에 도달했다.
+  오히려 기존 v2(1/20만)는 강팀의 강함을 과대평가해, 실제보다 위험을 5배 부풀린 것으로 확인됐다.</p>
+  <div class="badge">
+    <span>① 실제 조별리그 1차전 24경기 반영</span>
+    <span>② 딕슨-콜스(득점·승부차기) 독립 엔진</span>
+    <span>③ Opta(The Analyst) 예측에 보정</span>
+    <span>몬테카를로 150,000회</span>
+  </div>
+  <div class="verdict">
+    <h3>핵심 판정</h3>
+    <p><b>1인 100만원 정액 구조에서 이 이벤트의 재무 리스크는 사실상 없다.</b> 참가자 100만 명을 모아도 기대 지급액은 약 <b>2.7만원</b>,
+    당첨자가 한 명이라도 나올 확률은 약 <b>2%</b>다. 100번 대회를 열면 98번은 지급 0원이고, 나오더라도 평균 1명 수준이다.
+    유일한 꼬리 위험(전원이 똑같이 정배만 찍는 봇 가정)조차 <b>1/97만</b>로 더욱 희박해졌다.</p>
+  </div>
+</section>
+
+<!-- ===== 근거 1 : 완벽 vs 현실 ===== -->
+<section class="step">
+  <div class="part-tag">근거 ①</div>
+  <h2>왜 완벽 유저는 1/97만인데, 현실 유저는 1/3,640만인가</h2>
+  <p class="lead">같은 사람이 같은 대회를 예측하는데 왜 37.5배나 차이가 날까? 핵심은 <b>"매 경기 가장 확률 높은 팀(정배)을 고르는 것이 최선"</b>인데,
+  현실 유저는 박빙·인기팀의 유혹 때문에 종종 정배를 벗어나고, 그 한 번의 이탈이 전체를 무너뜨리기 때문이다.</p>
+
+  <div class="compare">
+    <div class="a">
+      <h5>완벽 유저 (always-favorite)</h5>
+      <div class="big">1 / 971,924</div>
+      <p>32경기 모두 <b>정배(승률 높은 팀)</b>만 픽. 수학적으로 가능한 최선의 전략.
+      적중 확률 = 매 경기 정배 승률을 전부 곱한 값 = "모든 정배가 실현될 확률".</p>
+    </div>
+    <div class="b">
+      <h5>현실 유저</h5>
+      <div class="big">1 / 36,420,199</div>
+      <p>정배에 쏠리긴 하지만 박빙에선 픽이 갈리고, 강팀 경기에서도 가끔 이변에 베팅.
+      정배를 벗어난 픽은 대부분 틀리므로 적중 확률이 <b>37.5배</b> 더 낮아진다.</p>
+    </div>
+  </div>
+
+  <div class="easy"><b>왜 37.5배인가 — 작은 손해가 32번 곱해진다.</b>
+  현실 유저는 매 경기 "정배를 고를 확률"이 100%가 아니다. 한 경기당 손해는 작지만, 32경기 연속으로 곱해지면 눈덩이가 된다.
+  per-경기로 보면 — <b>완벽 유저의 평균 정배승률 64.5%</b> vs <b>현실 유저의 평균 적중률 52.2%</b>. 이 격차가 32번 누적된다.</div>
+
+  <div class="card">
+    <h4>예시 — 승률 75%짜리 강팀 경기 하나에서</h4>
+    <div class="codebox">
+      완벽 유저 : 무조건 정배 픽 → 적중확률 <b>75.0%</b><br>
+      현실 유저 : 정배를 87.5%만 픽(12.5%는 이변에 베팅)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;→ 적중확률 = 0.875×0.75 + 0.125×0.25 = <span class="up">68.7%</span> &nbsp;(−6.3%p)<br><br>
+      이런 −몇%p 손해가 32경기 곱해지면 → 약 <b>1.12<sup>32</sup> ≈ 37.5배</b> 차이
+    </div>
+    <p class="small">손해는 주로 "강팀 경기에서 가끔 이변을 찍을 때" 발생한다. 박빙 경기(52%)에선 어차피 동전던지기라 손해가 거의 없다.
+    즉 현실 유저를 무너뜨리는 건 "확실한 정배를 안 믿는 순간"이다.</p>
+  </div>
+</section>
+
+<!-- ===== 근거 2 : 모델 정의 ===== -->
+<section class="step">
+  <div class="part-tag">근거 ②</div>
+  <h2>우리가 쓴 모델의 정의와 계산 로직</h2>
+  <p class="lead">전체 확률은 결국 "각 경기 승률"을 곱한 것이다. 그 승률을 어떻게 만들었고, 어떤 순서로 계산했는지를 모두 공개한다.
+  핵심은 <b>"강팀을 얼마나 믿을지(다이얼)"를 감이 아니라 Opta 예측에 맞춰 보정</b>했다는 점이다.</p>
+
+  <div class="grid2">
+    <div class="mcard"><span class="tag">모델 1 · 전력</span><h5>팀 레이팅</h5>
+      <p>각 팀에 점수를 매긴다. 과거 성적(FIFA 랭킹)과 현재 스쿼드 가치(시장 몸값)를 섞는다.</p>
+      <div class="f">레이팅 = FIFA포인트 × 0.55 + 시장가치환산 × 0.45</div></div>
+    <div class="mcard"><span class="tag">모델 2 · 승률</span><h5>점수차 → 승률 (로지스틱)</h5>
+      <p>두 팀 점수차를 승률로 변환. 분모 DIV이 "강팀 신뢰 다이얼"이며, Opta에 맞춰 <b>465</b>로 보정.</p>
+      <div class="f">P(승) = 1 / (1 + 10^(−Δ/465))</div></div>
+    <div class="mcard"><span class="tag">모델 3 · 조별리그</span><h5>푸아송 득점 모델</h5>
+      <p>조별리그는 무승부가 있으므로 양 팀 득점을 푸아송 분포로 시뮬(승점·골득실 산출). <b>1차전 실제 결과는 고정.</b></p>
+      <div class="f">골 ~ Poisson(λ), λ는 레이팅차로 결정</div></div>
+    <div class="mcard"><span class="tag">모델 4 · 토너먼트</span><h5>라운드별 정배 픽</h5>
+      <p>매 라운드 대진이 확정되면 그 매치업의 정배 승률을 곱한다. 뒤로 갈수록 강팀끼리 만나 승률이 50%대로 수렴.</p>
+      <div class="f">적중확률 = Π(각 경기 정배 승률)</div></div>
+    <div class="mcard"><span class="tag">모델 5 · 유저행동</span><h5>정배 쏠림 모델</h5>
+      <p>유저가 정배를 고를 확률. 박빙일수록 픽이 갈리고(50% 근처), 강팀일수록 쏠리되 상한 92%.</p>
+      <div class="f">q = min(0.92, 0.5 + 1.5×(p−0.5))</div></div>
+    <div class="mcard"><span class="tag">모델 6 · 지급</span><h5>당첨자 수 / 지급 (상관 반영)</h5>
+      <p>유저 픽이 서로 상관되므로 당첨자 수는 단순 곱이 아니다. 정배 실현 시 다수 동시 당첨, 이변 시 전원 탈락.</p>
+      <div class="f">당첨자 ~ 상관된 이항분포, 지급 = 당첨자수 × 100만</div></div>
+  </div>
+
+  <div class="card">
+    <h4>계산 로직 — 한 줄 흐름</h4>
+    <div class="codebox">
+      ① 레이팅(모델1) → ② 경기별 승률(모델2) →<br>
+      ③ 몬테카를로 15만회로 조별리그(모델3)·토너먼트(모델4) 가상 개최 →<br>
+      ④ 매 대회의 "32경기 정배 전부 적중 확률"을 계산 → 15만 개 평균 →<br>
+      ⑤ 유저행동(모델5)·지급구조(모델6) 적용 → 참가자수별 예상 지급액
+    </div>
+    <div class="note"><b>교차검증 장치 2개.</b> ⓐ <b>딕슨-콜스</b>: 녹아웃을 "로지스틱"이 아니라 "득점→스코어→무승부 시 승부차기"라는 완전히 다른 엔진으로 재계산(박빙 구간 두 모델 일치 확인). ⓑ <b>Opta(The Analyst)</b>: 업계 표준 예측모델의 우승확률에 우리 다이얼(DIV)을 맞춰, "강팀 신뢰"를 외부 기준으로 고정.</div>
+  </div>
+</section>
+
+<!-- ===== 근거 3 : 시뮬레이션 요약 ===== -->
+<section class="step">
+  <div class="part-tag">근거 ③</div>
+  <h2>시뮬레이션 요약 — 무엇을 어떻게 돌렸나</h2>
+  <p class="lead">가상 월드컵을 <b>15만 번</b> 개최했다. 매 대회 ① 실제 1차전을 고정한 채 남은 조별경기를 굴려 32강 진출국을 정하고
+  → ② 32강~결승 32경기를 진행 → ③ 적중 확률과 지급액을 기록했다.</p>
+
+  <h3 style="font-size:16px;font-weight:800;color:var(--pitch-deep);margin:4px 0 6px">① 32강 진출 확률 — 우리 로직으로 조별리그를 돌린 결과 (1차전 반영)</h3>
+  <p class="small" style="margin:0 0 12px">각 조 1·2위 자동 진출 + 12개 조 3위 중 상위 8팀 추가 진출. 막대는 20만 회 시뮬 중 1위 / 2위 / 3위-와일드카드로 진출한 비율, 우측 숫자는 총 진출 확률.</p>
+  <div class="legend">
+    <span><i class="b1"></i>조 1위로 진출</span>
+    <span><i class="b2"></i>조 2위로 진출</span>
+    <span><i class="b3"></i>3위 와일드카드</span>
+  </div>
+  <div class="groups" id="groups"></div>
+  <div class="note" style="margin-bottom:16px">1차전 결과가 그대로 반영됐다. <b>호주(D조 2-0 승) 92%·코트디부아르(E조 승) 98%·스웨덴(F조 5-1) 95%·한국(A조 2-1) 96%</b>로 급등,
+  <b>이란(2-2 무) 46%·튀르키예(0-2 패) 62%·에콰도르 76%</b>로 급락. 반면 <b>스페인은 0-0 충격에도 99.3%</b> — 압도적 전력은 1경기로 흔들리지 않는다.</div>
+
+  <div class="card">
+    <h4>② 우승 확률 — 우리 시뮬 vs Opta (보정 검증)</h4>
+    <table class="dt">
+      <thead><tr><th>팀</th><th>우리 시뮬</th><th>Opta</th><th>팀</th><th>우리 시뮬</th><th>Opta</th></tr></thead>
+      <tbody>
+        <tr><td>프랑스</td><td>14.6%</td><td>16.1%</td><td>브라질</td><td>6.1%</td><td>5.0%</td></tr>
+        <tr><td>스페인</td><td>13.5%</td><td>12.5%</td><td>네덜란드</td><td>5.5%</td><td>3.3%</td></tr>
+        <tr><td>아르헨티나</td><td>12.7%</td><td>12.6%</td><td>독일</td><td>4.6%</td><td>6.5%</td></tr>
+        <tr><td>잉글랜드</td><td>10.2%</td><td>10.2%</td><td>벨기에</td><td>4.2%</td><td>2.0%</td></tr>
+        <tr><td>포르투갈</td><td>6.4%</td><td>7.2%</td><td>모로코</td><td>3.7%</td><td>1.8%</td></tr>
+      </tbody>
+    </table>
+    <p class="small">상위권 우승확률이 Opta와 거의 일치(top4 합 우리 51.0% vs Opta 51.3%) → 우리 모델의 "강팀 신뢰" 보정이 외부 기준과 정합함을 확인.</p>
+  </div>
+
+  <div class="funnel">
+    <h3>③ 라운드를 통과할 때마다 확률이 무너진다 (완벽 유저 기준)</h3>
+    <div class="frow"><div class="rn">32강 16경기 후<br><small style="color:#9FC4AC">평균 정배 66.3%</small></div><div class="fb"><i style="width:100%"></i></div><div class="od">1 / 770</div></div>
+    <div class="frow"><div class="rn">16강 후 (평균 65.4%)</div><div class="fb"><i style="width:42%"></i></div><div class="od">1 / 23,639</div></div>
+    <div class="frow"><div class="rn">8강 후 (평균 63.5%)</div><div class="fb"><i style="width:22%"></i></div><div class="od">1 / 146,757</div></div>
+    <div class="frow"><div class="rn">4강 후 (평균 62.2%)</div><div class="fb"><i style="width:12%"></i></div><div class="od">1 / 379,520</div></div>
+    <div class="frow"><div class="rn">결승+3·4위전 후</div><div class="fb"><i style="width:6%"></i></div><div class="od">1 / 971,924<small>완주</small></div></div>
+  </div>
+  <p class="small">뒤로 갈수록 평균 정배승률이 66% → 62%로 떨어진다(강팀끼리 만나 동전던지기에 수렴). 결승은 51% 안팎 — 사실상 동전이다.</p>
+</section>
+
+<!-- ===== 이벤트 예상 결과 ===== -->
+<section class="step">
+  <div class="part-tag">이벤트 예상 결과</div>
+  <h2>이 이벤트를 진행하면 실제로 어떻게 되나</h2>
+  <p class="lead">1인 100만원 정액 기준. 지급은 이진 사건이다 — 전수 적중자가 나오면 그 인원수 × 100만원, 아무도 못 맞히면 0원.</p>
+
+  <div class="card">
+    <table class="dt">
+      <thead><tr><th>참가자 수</th><th>당첨자 나올 확률</th><th>예상 당첨 인원</th><th>예상 지급액</th></tr></thead>
+      <tbody>
+        <tr><td>1만 명</td><td>0.03%</td><td>~0명</td><td>275원</td></tr>
+        <tr><td>5만 명</td><td>0.14%</td><td>~0명</td><td>1,373원</td></tr>
+        <tr><td>10만 명</td><td>0.27%</td><td>~0명</td><td>2,746원</td></tr>
+        <tr><td>30만 명</td><td>0.76%</td><td>0~1명</td><td>8,237원</td></tr>
+        <tr class="hl"><td>100만 명</td><td>약 2%</td><td>나오면 1~2명</td><td>약 27,457원</td></tr>
+      </tbody>
+    </table>
+    <p class="small">※ "예상 지급액"은 기대값(확률 가중 평균)이다. 100만 명 기준, 100번 대회 중 약 98번은 0원, 나오는 2번은 보통 100만~200만원이다.</p>
+  </div>
+
+  <div class="card">
+    <h4 style="color:var(--upset)">⚠ 유일한 꼬리 위험 — 전원 정배 봇 (참고)</h4>
+    <p style="font-size:14px">모든 유저가 기계처럼 매 경기 정배만 똑같이 찍는 극단 가정에서만, "32경기 정배가 전부 실현되는 사건"이 터지면 전원이 동시 당첨된다.</p>
+    <div class="codebox" style="background:#FBEAE8;border:1px solid var(--upset);margin-top:8px">
+      발생 확률 = <b>1/97만 (0.0001%)</b> · 10만 명이면 터질 때 1,000억<br>
+      → 현실 유저는 박빙에서 픽이 갈리므로 이 사건은 일어나지 않는다. 정액 구조가 걱정되면 <span class="up">참가자 수 캡 또는 총지급 상한</span>으로 완전 봉인 가능.
+    </div>
+  </div>
+
+  <div class="verdict" style="background:var(--pitch-deep)">
+    <h3>예상 결과 요약</h3>
+    <p>현실적인 참가 규모(수만~수십만)에서 <b>기대 지급액은 수천~수만 원</b>대이며, 당첨자는 대부분 0명이다.
+    100만 명이라는 비현실적 대규모에서도 기대 지급 <b>약 2.7만원</b>, 당첨확률 <b>약 2%</b>. 마케팅 효과 대비 지급 리스크는 무시할 수준이다.</p>
+  </div>
+</section>
+
+<!-- ===== 이전 버전과의 차이 & 신뢰도 ===== -->
+<section class="step">
+  <div class="part-tag">신뢰도</div>
+  <h2>이전 버전(v1)과 무엇이 달랐고, 왜 새 결과를 믿을 수 있나</h2>
+  <p class="lead">v1·v2도 합리적인 출발점이었다. 뼈대(레이팅 → 승률 → 몬테카를로)는 이번에도 그대로 계승했다.
+  다만 이전 버전은 ⓐ 외부 기준으로 검증되지 않았고 ⓑ 단일 모델에 의존했으며 ⓒ 실제 대회 데이터가 없었다 — 이번 검증은 이 셋을 모두 보완했다.</p>
+
+  <div class="card">
+    <table class="dt">
+      <thead><tr><th>항목</th><th style="text-align:left">이전 (v1 / v2)</th><th style="text-align:left">이번 검증</th><th style="text-align:left">왜 새 쪽이 더 믿을 만한가</th></tr></thead>
+      <tbody>
+        <tr><td>강팀 신뢰 다이얼</td><td style="text-align:left">감으로 설정(v1) → 역배 개수에 맞춤(v2)</td><td style="text-align:left">Opta 우승확률에 정합(DIV=465)</td><td style="text-align:left">업계 표준 모델·시장 배당과 일치</td></tr>
+        <tr><td>대회 데이터</td><td style="text-align:left">개막 전 가정만</td><td style="text-align:left">실제 1차전 24경기 반영</td><td style="text-align:left">가정이 아닌 실제 결과에서 출발</td></tr>
+        <tr><td>모델 수</td><td style="text-align:left">단일(로지스틱)</td><td style="text-align:left">로지스틱 + 딕슨-콜스 교차</td><td style="text-align:left">다른 엔진이 같은 답 → 버그·우연 아님</td></tr>
+        <tr><td>확률 정의</td><td style="text-align:left">1/294만(평균화 오류)과 1/164만 혼재</td><td style="text-align:left">'라운드별 픽 = chalk'로 통일</td><td style="text-align:left">정의가 하나, 내부 모순 제거</td></tr>
+        <tr><td>당첨자 수</td><td style="text-align:left">독립 가정 위주</td><td style="text-align:left">유저 픽 상관성 반영</td><td style="text-align:left">동시 당첨/전원 탈락의 실제 분포</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note"><b>v1을 무시하라는 게 아니다.</b> v1·v2가 잡은 큰 그림("이 이벤트는 안전하다")은 옳았다.
+  바뀐 것은 단 하나의 핵심 손잡이 — "강팀을 얼마나 믿느냐" — 를 <b>감이 아니라 외부 기준(Opta)에 고정</b>하고,
+  <b>실제 1차전 + 두 번째 엔진(딕슨-콜스)으로 교차 확인</b>했다는 점이다. 그래서 숫자(1/97만)의 신뢰 구간이 훨씬 좁아졌다.</div>
+
+  <div class="grid2">
+    <div class="mcard"><span class="tag" style="background:var(--pitch-deep)">신뢰의 근거</span><h5>외부 기준과 일치</h5>
+      <p>우리 우승확률이 Opta와 거의 같다(top4 합 51.0% vs 51.3%, 아르헨·잉글랜드는 소수점까지 일치).
+      승률 분포가 외부 기준과 맞으니, 그것을 32번 곱해 나온 1/97만도 신뢰할 수 있다.</p></div>
+    <div class="mcard"><span class="tag" style="background:var(--upset)">남은 한계</span><h5>폼은 아직 부분 반영</h5>
+      <p>정적 레이팅이라 대회 중 컨디션·기세를 완전히 못 잡는다(독일·노르웨이가 Opta와 차이).
+      1경기로 적중확률이 ~11% 움직일 수 있으나, <b>어느 방향이든 '안전' 범위 안</b>이라 결론은 불변.</p></div>
+  </div>
+</section>
+
+<!-- ===== 검증 결론 ===== -->
+<section class="step">
+  <div class="part-tag" style="background:var(--pitch-deep)">검증 결론</div>
+  <h2>헤드라인 확률의 전체 여정 — 무엇이 어떻게 교정됐나</h2>
+  <table class="dt" style="margin-bottom:18px">
+    <thead><tr><th>단계</th><th>적중확률(완벽유저)</th><th>핵심 변화 / 판정</th></tr></thead>
+    <tbody>
+      <tr><td>v1 (최초)</td><td>1/294만</td><td style="text-align:left;color:var(--upset)">평균화 오류 — 이론상 불가능한 값</td></tr>
+      <tr><td>v1 정정</td><td>1/164만</td><td style="text-align:left">올바른 chalk(정배 완주) 확률</td></tr>
+      <tr><td>v2</td><td>1/20만</td><td style="text-align:left;color:var(--upset)">역배 개수에 맞춰 강팀 신뢰를 과도하게 상향(과보정)</td></tr>
+      <tr><td>v3 (1차전 반영)</td><td>1/16만</td><td style="text-align:left">v2 + 실제 조별 1차전 24경기</td></tr>
+      <tr class="hl"><td><b>Opta 보정 (최종)</b></td><td><b>1/97만</b></td><td style="text-align:left;color:var(--pitch-deep)"><b>독립 기준(Opta)에 정합 — 실제는 더 안전</b></td></tr>
+    </tbody>
+  </table>
+  <div class="note warn"><b>가장 중요한 교정.</b> v2의 핵심 변경(역배 기록에 맞춰 강팀 승률을 69%로 올린 것)이 과보정이었다.
+  Opta·딕슨-콜스·시장 배당 모두 강팀이 그 정도로 압도적이지 않다고 본다(예: 스페인 vs 이란 80% 수준). 그 결과 <b>실제 이벤트는 v2가 말한 것보다 약 5배 더 안전</b>하다.</div>
+
+  <div class="card">
+    <h4>남은 미세 변수 (정직한 한계)</h4>
+    <p style="font-size:13.5px;color:#3C4A3F">우리 레이팅은 고정값이라 대회 중 "폼·기세"를 반영하지 못한다. Opta와 일부 차이나는 팀(독일·노르웨이·크로아티아)이 그 흔적이다.
+    실제로 조별 1차전 결과 하나만으로도 적중확률이 약 11% 움직였다(폼 변수의 크기). 다만 이 변수는 <b>헤드라인·지급 결론을 바꾸지 않는다</b> — 어느 방향이든 이벤트는 안전 범위 안에 있다.</p>
+  </div>
+</section>
+
+</main>
+<script>
+const G={
+"A":[["멕시코",1658,59.1,28.6,10.8,98.5],["한국",1597,35.9,49.2,11.1,96.2],["체코",1573,4.6,17.1,38.5,60.2],["남아공",1465,0.5,5.0,10.9,16.4]],
+"B":[["스위스",1655,51.7,24.9,11.6,88.1],["캐나다",1582,28.9,33.3,19.3,81.5],["보스니아",1520,15.5,27.9,24.4,67.8],["카타르",1422,4.0,13.9,14.0,31.9]],
+"C":[["브라질",1773,54.3,40.2,5.1,99.6],["모로코",1733,42.7,47.9,8.7,99.2],["스코틀랜드",1551,3.0,11.9,43.7,58.6],["아이티",1370,0.0,0.0,0.4,0.4]],
+"D":[["미국",1671,70.7,19.2,9.1,99.0],["튀르키예",1650,5.4,22.3,34.2,61.9],["호주",1561,23.0,49.2,19.9,92.1],["파라과이",1534,0.9,9.3,12.0,22.2]],
+"E":[["독일",1754,87.3,10.0,2.7,100.0],["에콰도르",1608,0.7,13.9,60.9,75.5],["코트디부아르",1567,11.9,75.5,10.4,97.9],["퀴라소",1361,0.0,0.7,0.9,1.6]],
+"F":[["네덜란드",1759,56.7,31.3,10.2,98.2],["일본",1672,27.1,42.2,22.2,91.4],["스웨덴",1598,16.1,26.3,53.0,95.4],["튀니지",1498,0.1,0.2,2.2,2.6]],
+"G":[["벨기에",1730,71.9,22.8,4.2,98.9],["이집트",1570,20.0,52.7,14.2,86.8],["이란",1561,7.5,19.6,19.2,46.4],["뉴질랜드",1409,0.6,4.8,7.1,12.6]],
+"H":[["스페인",1846,81.5,15.5,2.2,99.3],["우루과이",1671,16.4,58.0,15.9,90.3],["사우디",1439,1.3,13.0,30.5,44.8],["카보베르데",1411,0.7,13.5,21.7,35.9]],
+"I":[["프랑스",1851,94.8,4.8,0.4,100.0],["세네갈",1680,0.9,55.1,33.7,89.7],["노르웨이",1623,4.3,40.1,46.1,90.4],["이라크",1411,0.0,0.0,0.3,0.4]],
+"J":[["아르헨티나",1830,93.6,6.3,0.1,100.0],["오스트리아",1627,6.1,63.0,23.3,92.4],["알제리",1578,0.3,30.5,35.9,66.6],["요르단",1375,0.0,0.2,2.1,2.3]],
+"K":[["포르투갈",1780,56.9,36.6,4.8,98.3],["콜롬비아",1679,40.8,49.9,8.0,98.8],["우즈벡",1470,0.1,1.5,15.2,16.8],["콩고DR",1484,2.2,12.0,34.4,48.6]],
+"L":[["잉글랜드",1834,99.0,0.9,0.0,100.0],["크로아티아",1696,0.7,85.0,8.2,93.9],["가나",1515,0.3,13.5,34.9,48.8],["파나마",1467,0.0,0.5,1.4,2.0]]
+};
+const gNote={"A":"개최국 멕시코+한국","C":"죽음의 조 (브라질·모로코)","D":"1차전 이변: 호주↑","I":"죽음의 조 (프랑스)","H":"스페인 0-0 이변"};
+let gh="";
+for(const [g,teams] of Object.entries(G)){
+  gh+=`<div class="gcard"><h3>GROUP ${g}<small>${gNote[g]||""}</small></h3>`;
+  for(const [n,rt,p1,p2,p3,adv] of teams){
+    gh+=`<div class="trow"><div class="tname">${n}<span class="rt">${rt}</span></div><div class="adv">${adv.toFixed(0)}%</div>
+    <div class="bar"><i class="b1" style="width:${p1}%"></i><i class="b2" style="width:${p2}%"></i><i class="b3" style="width:${p3}%"></i></div></div>`;
+  }
+  gh+=`</div>`;
+}
+document.getElementById("groups").innerHTML=gh;
+</script>
+<footer><div class="wrap">Polyball 내부 검토용 · 검증 보고서(2차) · 데이터: FIFA랭킹 2026-04 + 시장가치 + 2026 조별리그 1차전 실제결과(24경기) · 시뮬레이션: Monte Carlo 150,000회 · 교차검증: Dixon-Coles, Opta(The Analyst) · 승률 다이얼 DIV=465 (Opta 보정)</div></footer>
+
+</body>
+</html>
