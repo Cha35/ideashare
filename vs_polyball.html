@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기능정의서 · 폴리볼을 이겨라 (Beat Polyball) v1.0</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1F30E9; --navy:#00143F; --mint:#09FFEE;
+    --green:#13B36B; --green-bg:#EAF8F0;
+    --orange:#F08A24; --orange-bg:#FFF4E8;
+    --red:#D9534F; --red-bg:#FBECEC;
+    --t1:#16181D; --t3:#444B57; --t4:#7A828F; --t5:#A8AEB8;
+    --bg2:#F4F5F7; --line:#EAECF0;
+    --mono:'DM Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Pretendard',-apple-system,sans-serif;color:var(--t1);background:#E9ECF1;-webkit-font-smoothing:antialiased;line-height:1.6;}
+  .doc{max-width:980px;margin:0 auto;background:#fff;min-height:100vh;box-shadow:0 0 40px rgba(0,20,63,.08);}
+
+  /* topbar */
+  .topbar{background:var(--navy);color:#fff;padding:26px 40px;}
+  .topbar .eyebrow{font-size:12px;letter-spacing:1px;color:var(--mint);font-weight:700;margin-bottom:8px;}
+  .topbar h1{font-size:26px;font-weight:800;letter-spacing:-.5px;}
+  .topbar .en{font-size:13px;color:rgba(255,255,255,.6);font-family:var(--mono);margin-top:4px;}
+
+  /* meta */
+  .meta{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line);}
+  .meta .m{flex:1;min-width:140px;padding:14px 20px;border-right:1px solid var(--line);}
+  .meta .m:last-child{border-right:none;}
+  .meta .mk{font-size:11px;color:var(--t5);margin-bottom:4px;}
+  .meta .mv{font-size:13px;font-weight:700;}
+  .meta .mv.mono{font-family:var(--mono);}
+
+  .body{padding:8px 40px 60px;}
+
+  /* section */
+  .section{margin-top:40px;}
+  .sec-hd{display:flex;align-items:baseline;gap:10px;padding-bottom:12px;border-bottom:2px solid var(--blue);margin-bottom:18px;}
+  .sec-id{font-family:var(--mono);font-size:13px;font-weight:500;color:#fff;background:var(--blue);padding:3px 9px;border-radius:6px;}
+  .sec-title{font-size:19px;font-weight:800;letter-spacing:-.3px;}
+  .sec-desc{margin-left:auto;font-size:12px;color:var(--t5);}
+
+  /* callouts */
+  .ok,.info,.warn,.block{border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:14px;line-height:1.6;}
+  .ok{background:var(--green-bg);color:#0c7a47;border-left:3px solid var(--green);}
+  .info{background:#EEF1FF;color:#2533a8;border-left:3px solid var(--blue);}
+  .warn{background:var(--orange-bg);color:#9a5a10;border-left:3px solid var(--orange);}
+  .block{background:var(--red-bg);color:#a3372f;border-left:3px solid var(--red);}
+
+  /* func card */
+  .fc{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden;}
+  .fc-hd{display:flex;align-items:center;gap:9px;padding:12px 15px;background:var(--bg2);border-bottom:1px solid var(--line);}
+  .tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+  .tag.green{background:var(--green);color:#fff;}
+  .tag.orange{background:var(--orange);color:#fff;}
+  .tag.red{background:var(--red);color:#fff;}
+  .tag.blue{background:var(--blue);color:#fff;}
+  .tag.gray{background:#D7DBE2;color:var(--t3);}
+  .fc-name{font-size:14px;font-weight:800;}
+  .fc-body{padding:14px 16px;}
+  .feat{font-size:13px;color:var(--t3);padding:5px 0 5px 16px;position:relative;}
+  .feat::before{content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--blue);}
+  .feat b{color:var(--t1);}
+  .feat.ind{padding-left:30px;}
+  .feat.ind::before{left:18px;background:var(--t5);}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  .tbl-wrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+  th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px;font-weight:700;font-size:12px;}
+  td{padding:11px 14px;border-top:1px solid var(--line);color:var(--t3);}
+  td b,td strong{color:var(--t1);}
+  tr:nth-child(even) td{background:#FBFCFD;}
+  .num{font-family:var(--mono);font-weight:700;color:var(--blue);}
+  .badge-tbd{font-size:11px;font-weight:800;color:var(--orange);background:var(--orange-bg);padding:2px 7px;border-radius:5px;font-family:inherit;}
+
+  .todo{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);}
+  .todo:last-child{border-bottom:none;}
+  .todo-n{font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:var(--t4);width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .todo-n.red{background:var(--red);}
+  .todo-t{font-size:13px;color:var(--t3);}
+  .todo-t b{color:var(--t1);}
+
+  /* changelog */
+  .cl{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .cl-v{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);width:48px;flex-shrink:0;}
+  .cl-d{font-size:13px;color:var(--t3);}
+  .cl-d .dt{font-size:11px;color:var(--t5);}
+
+  /* ===== embedded screen mockups (#screens scoped) ===== */
+  #screens{background:#EEF0F4;border:1px solid var(--line);border-radius:14px;padding:30px 20px 24px;margin-bottom:8px;}
+  #screens .srow{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;}
+  #screens .col{width:360px;}
+  #screens .cap{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+  #screens .cap span{display:block;font-size:10px;font-weight:500;color:#6b7280;margin-top:2px;}
+  #screens .phone{width:360px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 14px 36px rgba(0,20,63,.2);}
+  #screens .sb{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:700;color:var(--navy);}
+  #screens .sc{height:660px;overflow-y:auto;}
+  #screens .sc::-webkit-scrollbar{width:0;}
+  #screens .ban{padding:18px 18px 16px;text-align:center;color:#fff;background:linear-gradient(180deg,#0a1f57,#040f2e);position:relative;}
+  #screens .ban .bt{font-style:italic;font-size:11px;opacity:.85;}
+  #screens .ban .bm{font-style:italic;font-weight:800;font-size:21px;margin-top:4px;}
+  #screens .ban .bp{display:inline-block;margin-top:10px;padding:5px 14px;border-radius:18px;background:rgba(255,255,255,.16);font-size:12px;font-weight:700;}
+  #screens .etabs{display:flex;border-bottom:1px solid var(--line);}
+  #screens .etab{flex:1;text-align:center;padding:12px 0 10px;font-size:12px;color:var(--t4);position:relative;}
+  #screens .etab.on{color:var(--t1);font-weight:800;}
+  #screens .etab.on::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:40px;height:2.5px;background:var(--navy);border-radius:2px;}
+  #screens .pad{padding:16px 16px 0;}
+  #screens .rounds{display:flex;gap:7px;margin-bottom:16px;}
+  #screens .rchip{flex:1;border:1px solid var(--line);border-radius:11px;padding:8px 4px;text-align:center;}
+  #screens .rchip .rt{font-size:12px;font-weight:800;}
+  #screens .rchip .rs{font-size:9px;color:var(--t5);margin-top:1px;}
+  #screens .rchip.on{background:var(--blue);border-color:var(--blue);}
+  #screens .rchip.on .rt{color:#fff;}
+  #screens .rchip.on .rs{color:rgba(255,255,255,.8);}
+  #screens .rchip.off{opacity:.45;}
+  #screens .ptg{display:flex;gap:12px;align-items:baseline;margin-bottom:6px;}
+  #screens .ptg .on{font-size:18px;font-weight:800;}
+  #screens .ptg .off{font-size:18px;font-weight:800;color:var(--t5);}
+  #screens .lead{font-size:12px;color:var(--t3);margin-bottom:14px;}
+  #screens .statc{display:flex;background:var(--bg2);border-radius:13px;padding:14px 0;margin-bottom:14px;}
+  #screens .statc .cl2{flex:1;text-align:center;}
+  #screens .statc .lb{font-size:11px;color:var(--t4);margin-bottom:5px;}
+  #screens .statc .vl{font-size:16px;font-weight:800;}
+  #screens .vscard{position:relative;border-radius:15px;padding:15px 15px 13px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,#1F30E9,#0a1f6e 55%,#00143F);overflow:hidden;}
+  #screens .vscard .hd{display:flex;align-items:center;gap:6px;margin-bottom:11px;}
+  #screens .vscard .hd .tt{font-size:13px;font-weight:800;}
+  #screens .vscard .st{margin-left:auto;font-size:10px;font-weight:800;padding:3px 8px;border-radius:18px;background:rgba(9,255,238,.18);color:var(--mint);}
+  #screens .vscard .rw{display:flex;margin-bottom:11px;}
+  #screens .vscard .sd{flex:1;}
+  #screens .vscard .sd .sl{font-size:10px;opacity:.7;margin-bottom:3px;}
+  #screens .vscard .sd .ss{font-size:20px;font-weight:800;line-height:1;}
+  #screens .vscard .sd .sr{font-size:10px;opacity:.7;margin-top:3px;}
+  #screens .vscard .sd.me{text-align:right;}
+  #screens .vscard .sd.me .ss{color:var(--mint);}
+  #screens .vscard .md{width:36px;text-align:center;align-self:center;font-size:12px;font-weight:800;opacity:.5;}
+  #screens .vscard .talk{background:rgba(255,255,255,.1);border-radius:9px;padding:8px 10px;font-size:11px;line-height:1.5;margin-bottom:11px;}
+  #screens .vscard .talk b{color:var(--mint);}
+  #screens .vscard .cta{display:flex;align-items:center;justify-content:center;gap:4px;background:#fff;color:var(--blue);border-radius:9px;padding:10px 0;font-size:12px;font-weight:800;}
+  #screens .rinfo{background:#F1F0FB;border-radius:13px;padding:16px;text-align:center;margin-bottom:18px;}
+  #screens .rinfo .rt{font-size:13px;font-weight:800;margin:5px 0 3px;}
+  #screens .rinfo .rs{font-size:11px;color:var(--t4);}
+  #screens .secl{font-size:15px;font-weight:800;margin-bottom:10px;}
+  #screens .rwrap{display:flex;background:var(--green-bg);border-radius:13px;padding:14px 0;margin-bottom:4px;}
+  #screens .rwrap .rc{flex:1;text-align:center;}
+  #screens .rwrap .rr{font-size:12px;font-weight:800;margin-bottom:4px;}
+  #screens .rwrap .rp{font-size:12px;font-weight:800;color:var(--green);}
+  #screens .rwrap .rcn{font-size:10px;color:var(--t4);margin-top:2px;}
+  #screens .rhead{display:flex;padding:9px 2px;font-size:10px;color:var(--t5);border-bottom:1px solid var(--line);}
+  #screens .rhead .a{width:42px;}#screens .rhead .b{flex:1;}#screens .rhead .c{width:54px;text-align:right;}#screens .rhead .d{width:70px;text-align:right;}
+  #screens .rrow{display:flex;align-items:center;padding:12px 2px;font-size:12px;border-bottom:1px solid var(--line);}
+  #screens .rrow .a{width:42px;font-weight:800;}
+  #screens .rrow .b{flex:1;color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screens .rrow .c{width:54px;text-align:right;font-weight:700;}
+  #screens .rrow .d{width:70px;text-align:right;font-size:9px;color:var(--t4);}
+  #screens .rrow.me{background:#F3F4FE;margin:0 -16px;padding-left:18px;padding-right:18px;}
+  #screens .rrow.me .b{color:var(--blue);font-weight:800;}
+  #screens .rrow.bot{background:linear-gradient(90deg,rgba(31,48,233,.07),rgba(0,20,63,.04));margin:0 -16px;padding-left:18px;padding-right:18px;}
+  #screens .rrow.bot .a{font-size:15px;}
+  #screens .rrow.bot .b{color:var(--navy);font-weight:800;}
+  #screens .rrow.bot .c{color:var(--navy);}
+  #screens .more{text-align:center;padding:14px;font-size:12px;color:var(--t3);border:1px solid var(--line);border-radius:11px;margin:12px 0 20px;}
+  #screens .subhd{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);}
+  #screens .subhd .bk{font-size:17px;}
+  #screens .subhd .tt{flex:1;text-align:center;font-size:14px;font-weight:800;margin-right:16px;}
+  #screens .bsum{background:linear-gradient(135deg,#1F30E9,#00143F);color:#fff;border-radius:15px;padding:15px;margin:14px 16px;display:flex;align-items:center;}
+  #screens .bsum .bx{flex:1;text-align:center;}
+  #screens .bsum .bx .l{font-size:10px;opacity:.75;margin-bottom:4px;}
+  #screens .bsum .bx .v{font-size:19px;font-weight:800;}
+  #screens .bsum .bx.me .v{color:var(--mint);}
+  #screens .bsum .md{width:40px;text-align:center;font-size:11px;font-weight:800;opacity:.6;}
+  #screens .mcard{border:1px solid var(--line);border-radius:13px;margin:0 16px 12px;overflow:hidden;}
+  #screens .mcard .mh{padding:11px 13px;background:var(--bg2);font-size:11px;color:var(--t4);text-align:center;border-bottom:1px solid var(--line);}
+  #screens .mcard .mh b{color:var(--t1);font-size:12px;}
+  #screens .mcard .mh .mdl{margin-left:5px;font-size:9px;color:var(--blue);font-weight:700;}
+  #screens .prow{display:flex;padding:12px 13px;align-items:center;gap:9px;}
+  #screens .prow+.prow{border-top:1px dashed var(--line);}
+  #screens .prow .who{width:56px;font-size:11px;font-weight:800;}
+  #screens .prow .who.bot{color:var(--blue);}
+  #screens .prow .pk{flex:1;font-size:12px;color:var(--t3);}
+  #screens .prow .pk b{color:var(--t1);}
+  #screens .prow .res{font-size:10px;font-weight:700;padding:3px 7px;border-radius:7px;}
+  #screens .res.hit{background:var(--green-bg);color:var(--green);}
+  #screens .res.miss{background:var(--red-bg);color:var(--red);}
+  #screens .prow .pts{width:42px;text-align:right;font-size:12px;font-weight:800;}
+  #screens .pts.z{color:var(--t5);}#screens .pts.p{color:var(--blue);}
+  #screens .basis{padding:11px 13px;background:#FAFBFC;border-top:1px solid var(--line);}
+  #screens .basis .bt{font-size:10px;font-weight:800;color:var(--t4);margin-bottom:6px;}
+  #screens .basis .bi{font-size:11px;color:var(--t3);display:flex;justify-content:space-between;line-height:1.7;}
+  #screens .basis .bi span:last-child{color:var(--t1);font-weight:600;}
+  #screens .basis .bmo{margin-top:8px;font-size:11px;color:var(--blue);font-weight:700;text-align:center;border:1px solid #DDE0FB;border-radius:7px;padding:7px;}
+  #screens .nm{position:relative;}
+  #screens .nm::before{content:"NEW";position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:9px;font-weight:800;padding:2px 9px;border-radius:18px;z-index:5;}
+  #screens .nm>.box{outline:2px dashed var(--blue);outline-offset:3px;border-radius:15px;}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="topbar">
+    <div class="eyebrow">POLYBALL · 월드컵 개인 랭킹전 이벤트</div>
+    <h1>🤖 폴리볼을 이겨라 기능정의서</h1>
+    <div class="en">Beat Polyball · Feature Spec</div>
+  </div>
+
+  <div class="meta">
+    <div class="m"><div class="mk">문서 ID</div><div class="mv mono">BP-SPEC-v1.0</div></div>
+    <div class="m"><div class="mk">버전</div><div class="mv mono">v1.0</div></div>
+    <div class="m"><div class="mk">상태</div><div class="mv">정책 확정 · 일부 TBD</div></div>
+    <div class="m"><div class="mk">작성</div><div class="mv">2026.06</div></div>
+    <div class="m"><div class="mk">연관</div><div class="mv">개인 랭킹전 / 승부예측 / 스페셜 응모</div></div>
+  </div>
+
+  <div class="body">
+
+    <!-- BP-00 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-00</span><span class="sec-title">개요 · 컨셉</span><span class="sec-desc">방향 확정</span></div>
+      <div class="ok"><b>핵심 방향 — "이기는 경쟁"이 아니라 "참여하는 도전".</b> 재미와 참여 폭(더 많은 유저)을 우선하고, 이긴 소수에게 큰 보상이 몰리는 희소성 모델은 채택하지 않는다.</div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">목적 및 포지셔닝</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>목적</b> — 월드컵 개인 랭킹전 참여 유저에게 재미와 추가 참여 동기 제공. 폴리볼 AI 예측과 유저의 픽을 대전 구도로 프레이밍.</div>
+          <div class="feat"><b>포지셔닝</b> — 개인 랭킹전 위에 얹는 이벤트 레이어. 별도 기능이 아니라 기존 픽 경험에 "AI와의 대결"을 부착하는 형태.</div>
+          <div class="feat"><b>폭의 엔진은 보상이 아니라 재미</b> — 유저를 움직이는 1차 동력은 "AI를 이긴다"는 감정이며, 보상은 이를 거드는 양념 수준으로 둔다.</div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">운영 단위</span></div>
+        <div class="fc-body">
+          <div class="feat">개인 랭킹전 <b>각 회차별 독립</b> 진행. 회차 시작 시 순위·대결 초기화.</div>
+          <div class="feat">기간: 월드컵 개인 랭킹전 전체 (중도 중단 없음).</div>
+          <div class="feat"><b>자동 참가</b> — 개인 랭킹전 픽 = 폴리볼 대결 참가. 별도 진입·신청 없음.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-01 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-01</span><span class="sec-title">판정 · 점수 규칙</span><span class="sec-desc">확정</span></div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">점수 체계 — 유저·폴리볼 동일 적용</span></div>
+        <div class="fc-body" style="padding:0;">
+          <div class="tbl-wrap" style="border:none;border-radius:0;margin:0;">
+            <table>
+              <thead><tr><th>상황</th><th>획득 점수</th></tr></thead>
+              <tbody>
+                <tr><td>기본 적중</td><td><span class="num">100</span></td></tr>
+                <tr><td>30% 미만 선택 후 적중</td><td><span class="num">150</span></td></tr>
+                <tr><td>20% 미만 선택 후 적중</td><td><span class="num">180</span></td></tr>
+                <tr><td>10% 미만 선택 후 적중 (contrarian)</td><td><span class="num">200</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">폴리볼 점수 출처</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>픽은 사전 고정</b> — 정배(favorite) 기반 시뮬레이션 모델(Poisson)로 회차 시작 전 폴리볼의 픽을 확정.</div>
+          <div class="feat"><b>점수는 사후 정산</b> — 실제 경기 결과로 적중 여부를 계산해 정산 시점에 폴리볼 점수를 확정. (사전 "최종 점수" 확정 아님)</div>
+          <div class="feat">MD1은 실제 결과 기반, MD2·MD3는 예측 기반으로 화면에 라벨 표기.</div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">승패 판정</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>유저 점수 ≥ 폴리볼 점수 → 유저 승</b> (보상 대상).</div>
+          <div class="feat"><b>동점은 승으로 처리</b> — 폴리볼과 동점인 유저도 보상 대상에 포함.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-02 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-02</span><span class="sec-title">보상</span><span class="sec-desc">구조 확정 · 값/재화 TBD</span></div>
+      <div class="ok"><b>단순 정액.</b> 분배형(100개 N분의 1)과 총량 캡은 폐기. "폴리볼을 이기면 정액, 못 이기면 0"의 가장 단순한 형태.</div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">지급 구조</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>폴리볼을 이기면(동점 포함) 소액 정액 지급.</b> 못 이기면 0.</div>
+          <div class="feat"><b>참여 기본 보상은 별도로 주지 않음</b> — 개인 랭킹전 자체가 이미 "예측 마켓 참여 + 적중 보상"을 제공하므로 중복. 폴리볼을 이겨라 보상은 그 위에 얹는 재미용 추가분.</div>
+          <div class="feat">못 이긴 유저도 손해가 없음 — 랭킹전 기본 보상은 정상 수령하기 때문.</div>
+          <div class="feat"><b>지급 시점</b> — 회차 정산 시 순위 보상과 함께 지급.</div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag orange">TBD · 블로커</span><span class="fc-name">보상 재화</span></div>
+        <div class="fc-body">
+          <div class="warn">현재 개인 랭킹전 순위 보상은 <b>네이버페이 포인트(1만/1천원)</b>로 지급된다. 폴리볼을 이겨라 추가 보상의 재화가 이와 정합되어야 한다. 개발 착수 전 확정 필요.</div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>후보</th><th>장점</th><th>유의</th></tr></thead>
+              <tbody>
+                <tr><td><b>네이버페이 포인트</b></td><td>순위 보상과 동일 재화 · 일관성</td><td>현금성 → "양념"치곤 무겁고 비용 직결, 사행성 검토 필요</td></tr>
+                <tr><td><b>볼 / 응모권</b></td><td>무료 재화 · 인플레/사행성 관점 가벼움</td><td>순위 보상(N페이)과 재화 결이 달라짐</td></tr>
+                <tr><td><b>소액 N페이</b></td><td>재화 일관 + 규모만 축소</td><td>비용 통제선 별도 설계 필요</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag orange">TBD</span><span class="fc-name">정액 값(X) 및 인플레 통제</span></div>
+        <div class="fc-body">
+          <div class="feat">정액 값 <span class="badge-tbd">X = TBD</span> — 보상 재화 확정 후, 해당 재화의 실제 가치를 기준으로 산정.</div>
+          <div class="feat"><b>인플레 체크포인트</b> — 정액 구조상 이변 많은 회차엔 거의 전원이 X를 받을 수 있음. <b>"보상 대상 전원 × X"의 최대 살포량이 감당 가능한 선</b>에서 X를 끊어야 함(특히 무료 재화일 때 응모권 가치 희석 주의).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-03 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-03</span><span class="sec-title">폴리볼 페르소나 · 카피</span><span class="sec-desc">방향 확정 · 카피 안</span></div>
+      <div class="info">톤 = <b>공식 톤 기반 + 살짝 도발.</b> "건방진 캐릭터"가 아니라 "자신감 있는 공식 AI가 가볍게 약 올리는" 선. 픽 근거 공개로 "어디 보자" 호기심 유발. 인앱 카피는 해요체.</div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag blue">카피 안</span><span class="fc-name">상황별 카피 (검수 전 초안)</span></div>
+        <div class="fc-body" style="padding:0;">
+          <div class="tbl-wrap" style="border:none;border-radius:0;margin:0;">
+            <table>
+              <thead><tr><th>상황</th><th>카피</th></tr></thead>
+              <tbody>
+                <tr><td>대결 안내</td><td>"폴리볼도 이 경기 찍었어요. 이길 수 있겠어요?"</td></tr>
+                <tr><td>폴리볼 도발</td><td>"이 경기, 제 픽이 맞을 것 같은데요?"</td></tr>
+                <tr><td>유저 우세</td><td>"지금은 당신이 앞서요. 폴리볼이 긴장하네요."</td></tr>
+                <tr><td>유저 열세</td><td>"아직 폴리볼이 앞서 있어요. 따라잡을 수 있죠?"</td></tr>
+                <tr><td>승리 확정</td><td>"폴리볼을 이겼어요! AI보다 한 수 위였네요 🎯"</td></tr>
+                <tr><td>패배 확정</td><td>"이번엔 폴리볼이 한 발 빨랐어요. 다음 회차에서 설욕해요."</td></tr>
+                <tr><td>근거 진입</td><td>"폴리볼은 왜 이렇게 찍었을까요? 근거 보기 ›"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-04 화면설계 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-04</span><span class="sec-title">화면 설계 (디자인 산출물)</span><span class="sec-desc">목업 포함</span></div>
+      <div class="info">파란 점선(NEW) = 이번에 추가되는 폴리볼 영역. 나머지는 현재 운영 중인 화면 그대로.</div>
+
+      <div id="screens">
+        <div class="srow">
+
+          <!-- 화면 A -->
+          <div class="col">
+            <div class="cap">화면 A · 개인 랭킹전<span>현황 카드 아래 대결 카드 + 랭킹 내 폴리볼 인라인</span></div>
+            <div class="phone">
+              <div class="sb"><span>13:48</span><span>●●●● 📶 🔋</span></div>
+              <div class="sc">
+                <div class="ban"><div class="bt">2026 축구 승부를 예측하라!</div><div class="bm">예측하면 짜릿한 보상</div><div class="bp">6.11 — 7.31</div></div>
+                <div class="etabs"><div class="etab">승부예측</div><div class="etab on">🏆 랭킹전</div><div class="etab">스페셜 응모</div><div class="etab">이벤트 안내</div></div>
+                <div class="pad">
+                  <div class="rounds">
+                    <div class="rchip off"><div class="rt">1회차</div><div class="rs">종료</div></div>
+                    <div class="rchip on"><div class="rt">2회차</div><div class="rs">진행 중</div></div>
+                    <div class="rchip off"><div class="rt">3회차</div><div class="rs">예정</div></div>
+                  </div>
+                  <div class="ptg"><span class="on">개인 랭킹전</span><span class="off">팀 랭킹전</span></div>
+                  <div class="lead">다양한 예측에 참여하고 순위를 올려 당첨의 주인공이 되어보세요!</div>
+                  <div class="statc">
+                    <div class="cl2"><div class="lb">내 예측 참여</div><div class="vl">14회</div></div>
+                    <div class="cl2"><div class="lb">내 예측 적중</div><div class="vl">9회</div></div>
+                    <div class="cl2"><div class="lb">순위</div><div class="vl">10위</div></div>
+                  </div>
+                  <div class="nm"><div class="box">
+                    <div class="vscard">
+                      <div class="hd"><span>🤖</span><span class="tt">폴리볼을 이겨라</span><span class="st">이기는 중</span></div>
+                      <div class="rw">
+                        <div class="sd"><div class="sl">🤖 폴리볼</div><div class="ss">4,800</div><div class="sr">예상 10·11위 사이</div></div>
+                        <div class="md">VS</div>
+                        <div class="sd me"><div class="sl">나</div><div class="ss">4,900</div><div class="sr">10위 · +100점</div></div>
+                      </div>
+                      <div class="talk">"제 픽이 맞을 줄 알았는데… <b>아직은 당신이 한 수 위네요.</b>"</div>
+                      <div class="cta">폴리볼의 픽 보기 ›</div>
+                    </div>
+                  </div></div>
+                  <div class="rinfo"><div style="font-size:22px;">🎉</div><div class="rt">폴리볼을 이기면 추가 보상!</div><div class="rs">순위 보상과 별개로 정산 시 함께 지급돼요.</div></div>
+                  <div class="secl">🏆 조별리그 2차</div>
+                  <div class="rwrap">
+                    <div class="rc"><div class="rr">1–10위</div><div class="rp">N pay 1만원</div><div class="rcn">총 10명</div></div>
+                    <div class="rc"><div class="rr">11–300위</div><div class="rp">N pay 1천원</div><div class="rcn">총 290명</div></div>
+                  </div>
+                  <div class="rhead"><div class="a">순위</div><div class="b">닉네임</div><div class="c">점수</div><div class="d">보상</div></div>
+                  <div class="rrow"><div class="a">8</div><div class="b">백전무패</div><div class="c">5,020</div><div class="d">N pay 1만</div></div>
+                  <div class="rrow"><div class="a">9</div><div class="b">양파쿵야</div><div class="c">4,960</div><div class="d">N pay 1만</div></div>
+                  <div class="rrow me"><div class="a">10</div><div class="b">나 (무념무상)</div><div class="c">4,900</div><div class="d">N pay 1만</div></div>
+                  <div class="rrow bot"><div class="a">🤖</div><div class="b">폴리볼 · 순위 미집계</div><div class="c">4,800</div><div class="d">기준점</div></div>
+                  <div class="rrow"><div class="a">11</div><div class="b">떡뽀끼뽀끼</div><div class="c">4,750</div><div class="d">N pay 1천</div></div>
+                  <div class="rrow"><div class="a">12</div><div class="b">집에가고싶다</div><div class="c">4,700</div><div class="d">N pay 1천</div></div>
+                  <div class="more">더보기</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 화면 B -->
+          <div class="col">
+            <div class="cap">화면 B · 폴리볼의 픽<span>경기별 폴리볼 픽·근거 vs 내 픽 비교</span></div>
+            <div class="phone">
+              <div class="sb"><span>13:48</span><span>●●●● 📶 🔋</span></div>
+              <div class="sc">
+                <div class="subhd"><span class="bk">‹</span><span class="tt">🤖 폴리볼의 픽</span></div>
+                <div class="bsum"><div class="bx"><div class="l">🤖 폴리볼</div><div class="v">4,800</div></div><div class="md">VS</div><div class="bx me"><div class="l">나</div><div class="v">4,900</div></div></div>
+                <div class="nm" style="margin-top:16px;"><div class="box" style="outline:none;">
+                  <div class="mcard" style="outline:2px dashed var(--blue);outline-offset:3px;">
+                    <div class="mh">🇲🇽 멕시코 <b>vs</b> 🇰🇷 대한민국<span class="mdl">MD1 · 실제 결과</span></div>
+                    <div class="prow"><div class="who bot">🤖 폴리볼</div><div class="pk">멕시코 승 <b>(50%)</b></div><div class="res miss">미적중</div><div class="pts z">0</div></div>
+                    <div class="prow"><div class="who">👤 나</div><div class="pk">대한민국 승 <b>(26%)</b></div><div class="res hit">적중</div><div class="pts p">+150</div></div>
+                    <div class="basis"><div class="bt">📊 폴리볼 선택 근거</div>
+                      <div class="bi"><span>H2H</span><span>멕시코 3승 1무</span></div>
+                      <div class="bi"><span>최근 폼</span><span>멕시코 2연승 ↑</span></div>
+                      <div class="bi"><span>FIFA</span><span>멕시코 14위</span></div>
+                      <div class="bi"><span>모델</span><span>Poisson · 50%</span></div>
+                      <div class="bmo">근거 자세히 보기 ›</div>
+                    </div>
+                  </div>
+                  <div class="mcard" style="outline:2px dashed var(--blue);outline-offset:3px;">
+                    <div class="mh">🇧🇷 브라질 <b>vs</b> 🇯🇵 일본<span class="mdl">MD2 · 예측 기반</span></div>
+                    <div class="prow"><div class="who bot">🤖 폴리볼</div><div class="pk">브라질 승 <b>(68%)</b></div><div class="res hit">적중</div><div class="pts p">+100</div></div>
+                    <div class="prow"><div class="who">👤 나</div><div class="pk">무승부 <b>(12%)</b></div><div class="res miss">미적중</div><div class="pts z">0</div></div>
+                    <div class="basis"><div class="bt">📊 폴리볼 선택 근거</div>
+                      <div class="bi"><span>H2H</span><span>브라질 4승</span></div>
+                      <div class="bi"><span>최근 폼</span><span>브라질 3연승 ↑</span></div>
+                      <div class="bi"><span>모델</span><span>Poisson · 68%</span></div>
+                      <div class="bmo">근거 자세히 보기 ›</div>
+                    </div>
+                  </div>
+                </div></div>
+                <div style="height:20px;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">노출 규칙</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>대결 카드 위치</b> — 개인 랭킹전 "내 예측 참여/적중/순위" 현황 카드 바로 아래.</div>
+          <div class="feat"><b>랭킹 인라인</b> — 폴리볼을 점수 위치에 한 줄로 삽입하되, <b>유저 순위 번호에는 미반영</b>(표시 순위 ≠ 실제 순위). 폴리볼 행은 🤖 + "순위 미집계"로 표기.</div>
+          <div class="feat"><b>폴리볼의 픽 화면</b> — 대결 카드 진입. 경기별 폴리볼 픽·근거 vs 내 픽 비교. MD1 실제 결과 / MD2·MD3 예측 기반 라벨.</div>
+          <div class="feat"><b>자동 참가</b> — 승부예측 탭은 기존 흐름 그대로. 픽 = 대결 자동 참가.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-05 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-05</span><span class="sec-title">정산 · 업데이트</span><span class="sec-desc">확정</span></div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">수기 정산</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>정산은 수기.</b> 폴리볼 점수·승패·보상을 모두 정산 시점에 확정·지급.</div>
+          <div class="feat">유저는 정산 후 결과를 확인.</div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag red">폐기</span><span class="fc-name">실시간 처리 제거</span></div>
+        <div class="fc-body">
+          <div class="feat">매 경기 직후 실시간 점수·순위 갱신 <b>폐기</b>.</div>
+          <div class="feat">상위 진입/탈락 실시간 알림, 축하 애니메이션 <b>폐기</b>.</div>
+          <div class="feat ind">→ 초기 스테이지 개발 부담 제거 목적.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BP-06 -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">BP-06</span><span class="sec-title">난이도 · 운영</span><span class="sec-desc">확정 · 주의</span></div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag green">확정</span><span class="fc-name">난이도는 구조가 자연 조절</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>별도 난이도 조정 안 함.</b> 정배 기반 모델 + 이번 대회 이변 多 + contrarian 보너스 조합이 폴리볼을 자연스럽게 만만하게 만들어 참여 폭을 받쳐줌.</div>
+          <div class="feat">폴리볼은 정배(고확률)만 골라 보너스를 거의 못 받고 100점에 묶임 → 유저가 이변(저확률)을 맞히면 한 경기로 격차를 크게 벌림.</div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag orange">운영 가이드</span><span class="fc-name">픽 세팅 주의</span></div>
+        <div class="fc-body">
+          <div class="feat"><b>폴리볼 픽을 과하게 강하게 짜지 말 것</b> — 중위 유저가 절반쯤 이길 수 있어야 다수가 도전.</div>
+          <div class="feat">이변 적은 무난한 회차엔 폴리볼이 강해져 이기기 어려워질 수 있음 → 회차 간 편차는 감수(재미 양념 보상이라 영향 제한적).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">TODO</span><span class="sec-title">미결 사항</span><span class="sec-desc">6건</span></div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag red">개발 착수 전 확정</span><span class="fc-name">런칭 블로커</span></div>
+        <div class="fc-body">
+          <div class="todo"><div class="todo-n red">01</div><div class="todo-t"><b>보상 재화 확정</b> — N페이 포인트 / 볼·응모권 / 소액 N페이 중 택1 (BP-02 참조)</div></div>
+          <div class="todo"><div class="todo-n red">02</div><div class="todo-t"><b>정액 값 X 확정</b> — 재화 확정 후 가치 기준 산정 + 최대 살포량 통제선</div></div>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-hd"><span class="tag orange">개발 중 결정 가능</span><span class="fc-name">TBD</span></div>
+        <div class="fc-body">
+          <div class="todo"><div class="todo-n">03</div><div class="todo-t"><b>법령 검토</b> — 보상 재화 확정 후 1회. 대가성×우연성(사행성) 관점. 무료 재화면 기존 무료포인트 틀 내 안전 판단, 현금성(N페이)이면 경품·사행성 추가 검토 필요</div></div>
+          <div class="todo"><div class="todo-n">04</div><div class="todo-t"><b>꽝 회차 처리</b> — 폴리볼이 너무 강해 전원 패배 시 보상 0. 위로 보상은 컨셉 훼손이라 비채택 방향이나 확정 필요</div></div>
+          <div class="todo"><div class="todo-n">05</div><div class="todo-t"><b>페르소나 카피 검수</b> — UX Writing 가이드 정합 다듬기</div></div>
+          <div class="todo"><div class="todo-n">06</div><div class="todo-t"><b>공유·바이럴(AI 이김 인증)</b> — 리소스 보고 후속. 이번 범위 외</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- changelog -->
+    <div class="section">
+      <div class="sec-hd"><span class="sec-id">LOG</span><span class="sec-title">변경 이력</span></div>
+      <div class="cl"><div class="cl-v">v1.0</div><div class="cl-d">최초 작성 — 컨셉(참여하는 도전), 판정·점수, 단순 정액 보상, 페르소나 카피 안, 화면 설계(목업 통합), 수기 정산, 난이도 운영 원칙 확정. 보상 재화·X값 블로커 명시. <span class="dt">2026.06</span></div></div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
