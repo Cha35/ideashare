@@ -184,10 +184,13 @@
     <div class="cover-sub">기프티콘 · 실물경품 보유 표시 및 수령 — MVP (기획 + 화면 목업 통합본)</div>
     <div class="cover-meta">
       <div><strong>기능 ID</strong> WL</div>
-      <div><strong>버전</strong> v1.0</div>
-      <div><strong>작성일</strong> 2026-06-25</div>
+      <div><strong>버전</strong> v1.1</div>
+      <div><strong>작성일</strong> 2026-06-25 (v1.1 갱신)</div>
       <div><strong>플랫폼</strong> APP (웹은 앱 유도)</div>
-      <div><strong>상위 화면</strong> 마이(MY-01) / 내 지갑</div>
+      <div><strong>상위 화면</strong> 마이(MY-01) / 내 지갑 · 응모 현황</div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.2);font-size:12px;opacity:.9;line-height:1.7;">
+      <strong>v1.1 변경</strong> — ① 수령(발급) 모델 도입: 당첨=즉시발급 아님, 유저 [받기] 시점 발급 · ② 수령 진입점을 <strong>경품 응모 현황 + 알림</strong>으로, 내 지갑은 <strong>수령 완료분만</strong> 노출 · ③ 경품 응모 현황(미당첨 안내·수령 진입) 신설 · ④ 상태값 4종(사용가능/사용완료/만료/확인 중) · ⑤ 제세공과금·실물 분기 정리
     </div>
   </div>
 
@@ -196,13 +199,14 @@
     <h3>목차</h3>
     <ol>
       <li><a href="#overview">1. 개요 및 BM 연결</a></li>
-      <li><a href="#policy">2. 보상 타입별 정책</a></li>
-      <li><a href="#wl01">3. WL-01 내 지갑 — 보유 경품 영역</a></li>
-      <li><a href="#wl02">4. WL-02 기프티콘 상세</a></li>
-      <li><a href="#wl03">5. WL-03 실물경품 수령 플로우</a></li>
-      <li><a href="#data">6. 데이터 설계 (MVP)</a></li>
-      <li><a href="#legal">7. 법령 검토</a></li>
-      <li><a href="#todo">8. 미결 사항</a></li>
+      <li><a href="#policy">2. 보상 타입별 정책 · 상태 모델</a></li>
+      <li><a href="#receive">3. 수령 동선 · 경품 응모 현황</a></li>
+      <li><a href="#wl01">4. WL-01 내 지갑 — 보유 경품 영역</a></li>
+      <li><a href="#wl02">5. WL-02 기프티콘 상세</a></li>
+      <li><a href="#wl03">6. WL-03 실물경품 수령 플로우</a></li>
+      <li><a href="#data">7. 데이터 설계 (MVP)</a></li>
+      <li><a href="#legal">8. 법령 검토</a></li>
+      <li><a href="#todo">9. 미결 사항</a></li>
     </ol>
   </div>
 
@@ -213,7 +217,15 @@
       <div><div class="section-title">개요 및 BM 연결</div><div class="section-subtitle">왜 만드는가</div></div>
     </div>
     <div class="section-body">
-      <p>직관 티켓 외 <strong>두 번째 보상 경로</strong>로 기프티콘·실물경품을 도입하고, 지급된 경품을 유저가 인앱에서 확인·수령할 수 있는 화면을 정의한다. 위치는 <strong>마이 &gt; 내 지갑</strong>, 기존 <strong>보유 티켓 하단</strong>에 <strong>보유 경품</strong> 영역을 신설한다.</p>
+      <p>직관 티켓 외 <strong>두 번째 보상 경로</strong>로 기프티콘·실물경품을 도입하고, 지급된 경품을 유저가 인앱에서 확인·수령할 수 있는 화면을 정의한다. 보유 경품은 <strong>마이 &gt; 내 지갑</strong>의 보유 티켓 하단에 노출하고, 수령 진입은 <strong>마이 &gt; 내 활동 &gt; 응모 현황 &gt; 경품 응모</strong> 및 당첨 알림에서 시작한다.</p>
+      <div class="callout callout-warn">
+        <strong>핵심 원칙 (v1.1)</strong>
+        <ul>
+          <li><strong>수령 모델</strong> — 당첨 = 즉시 발급이 아니다. 기프티콘은 발행분 정산 대상이므로, 유저가 <strong>[받기]를 클릭한 시점에 발급/코드 할당</strong>한다.</li>
+          <li><strong>진입점 분리</strong> — 수령은 <strong>경품 응모 현황 + 당첨 알림</strong>에서 시작한다. <strong>내 지갑은 수령 완료된 경품만</strong> 노출한다(수령 전 건은 지갑에 넣지 않음).</li>
+          <li><strong>상세 진입 조건</strong> — 코드(바코드/핀)가 있는 상세는 발급 완료(사용가능) 이후에만 진입한다. 발급 전 '빈 상세'는 존재하지 않는다.</li>
+        </ul>
+      </div>
       <div class="callout callout-info">
         <strong>BM 연결</strong><br>
         고정 공급되는 직관 티켓은 유저 증가·시즌 종료 국면에서 당첨 희소성이 구조적으로 악화된다. 기프티콘·실물경품은 이 희소성을 분산하는 두 번째 보상 경로로, <strong>픽/응모 지속 동기를 유지 → 광고 노출 방어</strong>에 기여한다. 보상 모델 검증 트랙의 인앱 표시 레이어에 해당하므로, 이 화면 자체에는 광고를 삽입하지 않고 <strong>마찰 없는 수령 경험</strong>을 우선한다.
@@ -222,17 +234,19 @@
       <div class="func-card">
         <div class="func-card-hd"><span class="tag tag-blue">IN</span> 이번 문서 범위</div>
         <div class="func-card-body">
-          <div class="feat">유저 ID ↔ 경품 정보 매핑 테이블 기반 보유 경품 표시</div>
-          <div class="feat">기프티콘 상세(바코드형 / 쿠폰번호형) · 유효/만료 분기</div>
-          <div class="feat">실물경품 수령 플로우(개인정보 동의 → 본인인증 → 배송지 입력 → 접수 완료)</div>
+          <div class="feat">경품 응모 현황(미당첨 안내 + 수령 진입점) 신설 · 경품 단위 결과 표시</div>
+          <div class="feat">수령 동선(받기 → 확인 → 본인인증 → 발급/분기) 및 상태 모델</div>
+          <div class="feat">내 지갑 보유 경품 표시(수령 완료분) · 기프티콘 상세(바코드형/쿠폰번호형 · 상태 분기)</div>
+          <div class="feat">실물경품 수령 플로우(동의 → 본인인증 → 배송지 입력 → 접수 완료, 제세공과금 분기 포함)</div>
         </div>
       </div>
       <div class="func-card">
         <div class="func-card-hd"><span class="tag tag-gray">OUT</span> 이번 문서 제외</div>
         <div class="func-card-body">
-          <div class="feat">어드민 경품 등록·관리 (별도 문서)</div>
+          <div class="feat">어드민 경품 등록·관리 (ADM-PZ 별도 문서)</div>
           <div class="feat">실물경품 배송 상태 추적(배송중/완료) — 접수 완료까지만 표시</div>
-          <div class="feat">제세공과금 실제 수취 플로우 — <span class="tbd">TBD · 재무팀</span></div>
+          <div class="feat">제세공과금 실제 수취 플로우·정보 등록 항목 — <span class="tbd">TBD · 재무팀</span></div>
+          <div class="feat">정규 경품 응모의 회차 진행·발표 단위·알림 정책 상세 — <span class="tbd">TBD · 타 기획 의존</span></div>
         </div>
       </div>
     </div>
@@ -258,15 +272,15 @@
           <tr>
             <td class="td-label">기프티콘</td>
             <td>본인인증 <strong>무관</strong> 선정</td>
-            <td>본인인증 미완료 시 인증 진행 → 통과 후 바코드/번호 노출</td>
-            <td>없음 (인증만)</td>
+            <td>본인인증(미완료 시) → [수령하기] → 즉시 발급·코드 노출 / 제세공과금 시 입금 확인 후 발급</td>
+            <td>없음 (인증만) · 제세공과금 시 정보 등록(TBD)</td>
             <td>사용 유효기간 만료</td>
           </tr>
           <tr>
             <td class="td-label">실물경품</td>
             <td>본인인증 <strong>무관</strong> 선정</td>
-            <td>개인정보 동의 → 본인인증 → 배송지 입력</td>
-            <td>배송지 + 동의 이력</td>
+            <td>개인정보 동의 → 본인인증 → 배송지 입력 (제세공과금 시 입금 확인 후 접수)</td>
+            <td>배송지 + 동의 이력 · 제세공과금 시 정보 등록(TBD)</td>
             <td>배송지 입력 마감 기한</td>
           </tr>
         </tbody>
@@ -277,28 +291,133 @@
       <div class="callout callout-warn">
         <strong>만료 개념의 타입 차이</strong> — 기프티콘은 <strong>사용 유효기간</strong>이지만, 실물경품은 사용 개념이 없으므로 만료는 <strong>배송지 입력(접수) 마감 기한</strong>으로 정의한다. 접수 완료 후에는 만료 개념이 소멸한다.
       </div>
-      <div class="sub-h3">상태 모델 (MVP)</div>
+      <div class="callout callout-warn">
+        <strong>수령 모델 (정산 구조 반영)</strong> — 당첨 = 즉시 발급이 아니다. 기프티콘은 <strong>발행분 정산</strong> 대상이므로 무조건 선발급하지 않고, <strong>당첨 알림 → 유저가 [수령하기] 클릭 → 그 시점에 발급/코드 할당</strong>한다. 실물경품도 동일하게 [배송지 입력하기] 클릭으로 수령 의사를 받는다. (어드민 PZ는 '발급 예약'만 보유, 실제 발급은 유저 수령 시점)
+      </div>
+      <div class="sub-h3">상태 모델</div>
       <table>
         <thead><tr><th style="width:90px;">구분</th><th>상태값</th><th>설명</th></tr></thead>
         <tbody>
-          <tr><td class="td-label">기프티콘</td><td><span class="tag tag-green">유효</span> <span class="tag tag-gray">만료</span></td><td>유효기간 도래 시 <strong>만료 표기만</strong> 처리. 매장 실사용 여부는 시스템이 알 수 없으므로 '사용 완료' 상태 미도입.</td></tr>
-          <tr><td class="td-label">실물경품</td><td><span class="tag tag-orange">수령 대기</span> <span class="tag tag-blue">접수 완료</span> <span class="tag tag-gray">만료</span></td><td>접수 전 = 수령 대기 / 배송지 입력 완료 = 접수 완료 / 마감 기한 경과 = 만료.</td></tr>
+          <tr><td class="td-label">기프티콘</td><td><span class="tag tag-orange">수령 대기</span> <span class="tag tag-purple">확인 중</span> <span class="tag tag-green">사용가능</span> <span class="tag tag-blue">사용완료</span> <span class="tag tag-gray">만료</span></td><td>수령 대기(알림 수신·미수령) → [수령] → <strong>사용가능</strong>(코드 발급·노출) → <strong>사용완료</strong>(기프티콘 API로 매장 사용 확인) / <strong>만료</strong>(유효기간 경과). <strong>확인 중</strong> = 제세공과금 입금 확인 대기. <span class="tag tag-blue" style="font-size:9px;">각주②</span></td></tr>
+          <tr><td class="td-label">실물경품</td><td><span class="tag tag-orange">수령 대기</span> <span class="tag tag-purple">확인 중</span> <span class="tag tag-blue">접수 완료</span> <span class="tag tag-gray">만료</span></td><td>수령 대기 → [배송지 입력] → 접수 완료 / 마감 기한 경과 = 만료. 제세공과금 발생 시 <strong>확인 중</strong>(입금 확인 대기)을 거쳐 처리.</td></tr>
         </tbody>
       </table>
+      <div class="callout callout-info" style="font-size:12px;">
+        <strong>각주①</strong> 기프티콘 <strong>사용완료</strong>는 기프티콘 발급사 API 연동으로 매장 실사용 여부를 받아 표기한다(연동 전제). &nbsp;
+        <strong>각주②</strong> 기프티콘 <strong>확인 중</strong>(제세공과금)은 제세공과금이 발생할 만한 고가 기프티콘을 운영하는 경우가 사실상 없어, <strong>정말 예외적인 케이스가 아닌 한 발생하지 않을 것으로 본다.</strong> 분기는 정의하되 운영 기본값은 비발생으로 둔다.
+      </div>
     </div>
   </div>
 
-  <!-- 3. WL-01 -->
-  <div class="section" id="wl01">
+  <!-- 3. 수령 동선 · 경품 응모 현황 -->
+  <div class="section" id="receive">
     <div class="section-header">
       <div class="section-num">3</div>
+      <div><div class="section-title">수령 동선 · 경품 응모 현황</div><div class="section-subtitle">진입점 · 미당첨 안내 · 받기 → 발급</div></div>
+      <span class="sec-badge">APP</span>
+    </div>
+    <div class="section-body">
+
+      <div class="sub-section">
+        <div class="sub-title">3-1. 진입점</div>
+        <p>수령은 <strong>내 지갑이 아니라</strong> 아래 두 경로에서 시작한다. 내 지갑은 수령 완료분만 보유하므로 수령 전 건의 진입점이 될 수 없다.</p>
+        <table>
+          <thead><tr><th style="width:140px;">진입점</th><th>역할</th></tr></thead>
+          <tbody>
+            <tr><td class="td-label">당첨 알림(알림톡)</td><td>발표 시 발송(직관 티켓 패턴 재사용). 당첨 → 받기 동선으로 연결, 미당첨은 중립·재참여 유도 카피.</td></tr>
+            <tr><td class="td-label">경품 응모 현황</td><td>마이 &gt; 내 활동 &gt; 응모 현황 &gt; <strong>경품 응모</strong> 탭. 알림을 놓쳐도 결과·수령을 확인하는 영속 화면.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-info"><strong>영속성</strong> — 이벤트 페이지(응모하는 곳)는 종료·소멸 가능하지만, 경품 응모 현황은 유저↔응모/당첨 데이터 기반이라 페이지 소멸과 무관하게 내 내역·수령이 유지된다. 정규 경품 응모도 동일 세션 위에 얹는다.</div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">3-2. 경품 응모 현황 화면</div>
+        <p>위치: <strong>마이 &gt; 내 활동 &gt; 응모 현황</strong> 상단에 <strong>[직관 티켓 | 경품 응모]</strong> 탭 추가(기존 IA·화면 재사용). 데이터 단위는 <strong>경품 단위</strong> — 스페셜 응모가 경품별로 응모되므로, 카드 = 내가 응모한 경품 1개.</p>
+        <table>
+          <thead><tr><th style="width:120px;">카드 상태</th><th>표시</th><th>액션</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-orange">발표 대기</span></td><td>"○월 ○일 발표 예정" (결과 미정, 중립)</td><td>없음</td></tr>
+            <tr><td><span class="tag tag-gray">미당첨</span></td><td>뱃지만 + 카드 딤</td><td>없음</td></tr>
+            <tr><td><span class="tag tag-green">당첨 · 수령 전</span></td><td>당첨 뱃지</td><td><strong>[경품 받기]</strong> → 수령 동선(3-3)</td></tr>
+            <tr><td><span class="tag tag-purple">당첨 · 확인 중</span></td><td>"입금 확인 중" (제세공과금 O만, 사실상 예외)</td><td>없음(대기)</td></tr>
+            <tr><td><span class="tag tag-blue">당첨 · 수령 완료</span></td><td>"수령 완료"</td><td>지갑에서 확인</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-warn"><strong>'발표 대기' ≠ '확인 중'</strong> — 발표 대기는 <strong>추첨 전(결과 미정)</strong>, 확인 중은 <strong>당첨 확정 후 제세공과금 입금 대기</strong>로 의미가 정반대다. 뱃지 색·카피를 구분한다(발표 대기 amber / 확인 중 purple).</div>
+        <div class="mk"><div class="mk-row">
+          <div class="mk-fw">
+            <div class="mk-lab"><span class="d"></span>경품 응모 현황 <span class="s">경품 단위 · 상태 분기</span></div>
+            <div class="phone"><div class="scr">
+              <div class="sb"><span>9:41</span><span>▪▪▪ 📶 🔋</span></div>
+              <div class="sgnb"><span class="bk">←</span><span class="tt">응모 현황</span></div>
+              <div style="display:flex;gap:14px;padding:8px 14px 0;border-bottom:1px solid var(--border);flex-shrink:0">
+                <span style="font-size:11px;color:var(--text4);padding-bottom:7px">직관 티켓</span>
+                <span style="font-size:11px;font-weight:700;color:var(--text1);padding-bottom:7px;border-bottom:2px solid var(--text1)">경품 응모</span>
+              </div>
+              <div class="bd" style="padding-top:10px">
+                <div class="gl">
+                  <div class="gc" style="flex-direction:column;align-items:stretch;gap:8px">
+                    <div style="display:flex;align-items:center;gap:9px">
+                      <div class="th" style="background:#ECFDF5">🎮</div>
+                      <div class="gi"><span class="tag tag-green" style="font-size:8px">당첨</span> <span class="gn" style="display:inline">닌텐도 스위치2</span><div class="ge">내 응모 30회 · 발표 07.13(월)</div></div>
+                    </div>
+                    <div class="btn b-pri" style="margin:0;height:32px;border-radius:9px">경품 받기</div>
+                  </div>
+                  <div class="gc ex"><div class="th">🍗</div><div class="gi"><span class="tag tag-gray" style="font-size:8px">미당첨</span> <span class="gn" style="display:inline">BBQ 황금올리브+콜라</span><div class="ge">내 응모 11회 · 발표 06.30(월)</div></div></div>
+                  <div class="gc"><div class="th" style="background:#FFFBEB">⏳</div><div class="gi"><span class="tag tag-orange" style="font-size:8px">발표 대기</span> <span class="gn" style="display:inline">네이버페이 1만원</span><div class="ge">07.20(월) 발표 예정</div></div></div>
+                  <div class="gc"><div class="th" style="background:#F5F3FF">💳</div><div class="gi"><span class="tag tag-purple" style="font-size:8px">확인 중</span> <span class="gn" style="display:inline">고가 경품(제세공과금)</span><div class="ge">입금 확인 중 · 예외</div></div></div>
+                </div>
+              </div>
+            </div></div>
+          </div>
+          <div class="mk-fw">
+            <div class="mk-lab"><span class="d"></span>수령 확인 <span class="s">바텀시트 · 비가역</span></div>
+            <div class="phone"><div class="scr">
+              <div class="sb"><span>9:41</span><span>▪▪▪ 📶 🔋</span></div>
+              <div class="bd" style="position:relative;padding:0">
+                <div style="padding:10px 14px;font-size:11px;color:var(--text5);opacity:.5">경품 응모 현황…</div>
+                <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:16px 16px 18px;box-shadow:0 -4px 20px rgba(0,0,0,.08)">
+                  <div style="width:32px;height:3px;border-radius:2px;background:var(--line2);margin:0 auto 14px"></div>
+                  <div style="width:48px;height:48px;border-radius:12px;background:#EEF1FE;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:24px">🎁</div>
+                  <div style="font-size:13px;font-weight:800;text-align:center;line-height:1.4">닌텐도 스위치2를<br>받으시겠어요?</div>
+                  <div style="font-size:11px;color:var(--text3);text-align:center;margin:7px 0 14px">발급 후에는 취소·교환이 안 돼요</div>
+                  <div class="btn b-pri" style="margin:0">받기</div>
+                </div>
+              </div>
+            </div></div>
+          </div>
+        </div>
+        <div class="mk-cap">일반 케이스는 경품 응모 현황 [경품 받기] → 바텀시트 [받기] → (인증) → 발급으로 2탭. 본인인증은 미인증자만 1회, 제세공과금·실물은 해당 당첨자에게만 분기.</div></div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">3-3. 수령 동선 (받기 → 발급)</div>
+        <div class="flow-box">[기본 99% · 기프티콘 · 인증완료 · 5만원 미만]
+  경품 응모 현황 [경품 받기] 또는 당첨 알림
+  → 수령 확인 바텀시트("받으시겠어요? 발급 후 취소·교환 불가") → [받기]
+  → 즉시 발급 → 내 지갑에 '사용가능' 편입 → 상세(바코드/핀) 진입
+
+[분기 · 미인증]      위 사이에 본인인증 1회 추가(이후 영구 생략)
+[분기 · 제세공과금 O] 안내·정보 등록(TBD)·입금 → '확인 중' → 입금 확인 → 발급  ※ 풀스크린
+[분기 · 실물]        배송지 입력 → 접수 완료 (제세공과금 O면 입금 확인 거쳐 접수)</div>
+        <div class="callout callout-info">수령 확인은 비가역 액션이므로 <strong>바텀시트 1회 확인</strong>으로 충분(별도 화면·재확인 불필요). 단 제세공과금 O는 정보 등록·입금이라는 실제 절차가 있어 <strong>풀스크린</strong>으로 처리한다. 발급/코드 할당은 [받기] 시점(제세공과금 시 입금 확인 후)에 확정된다.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. WL-01 -->
+  <div class="section" id="wl01">
+    <div class="section-header">
+      <div class="section-num">4</div>
       <div><div class="section-title">WL-01 — 내 지갑 보유 경품 영역</div><div class="section-subtitle">마이 &gt; 내 지갑 · 보유 티켓 하단 신설</div></div>
       <span class="sec-badge">APP</span>
     </div>
     <div class="section-body">
 
       <div class="sub-section">
-        <div class="sub-title">3-0. 화면 미리보기</div>
+        <div class="sub-title">4-0. 화면 미리보기</div>
         <div class="mk"><div class="mk-row">
           <div class="mk-fw">
             <div class="mk-lab"><span class="d"></span>보유 경품 <span class="s">빈 상태(0건)</span></div>
@@ -333,7 +452,7 @@
                 <div class="sr"><span class="l">보유 경품 <span class="nu">NEW</span></span><span class="r"><b>3</b>개 · 전체 ›</span></div>
                 <div class="gl">
                   <div class="gc"><div class="th">🍩</div><div class="gi"><span class="tyb tg">기프티콘</span><div class="gn">[던킨] 아메리카노 2+도넛세트</div><div class="ge">~12.31까지 <span class="dd">· D-5</span></div></div><span class="cv">›</span></div>
-                  <div class="gc"><div class="th" style="background:#E7EEFF">🎽</div><div class="gi"><span class="tyb tp">실물</span><div class="gn">SSG 랜더스 공식 유니폼</div><div class="ge">07.10까지 신청</div></div><span class="cv">›</span></div>
+                  <div class="gc"><div class="th" style="background:#E7EEFF">🎽</div><div class="gi"><span class="tyb tp">실물</span><div class="gn">SSG 랜더스 공식 유니폼</div><div class="ge" style="color:var(--primary)">접수 완료 · 배송 예정</div></div><span class="cv">›</span></div>
                   <div class="gc ex"><div class="th">☕</div><div class="gi"><span class="tyb tx">만료</span><div class="gn">[스타벅스] 아이스 아메리카노 T</div><div class="ge">06.20 만료됨</div></div><span class="cv">›</span></div>
                 </div>
                 <div class="sr"><span class="l">보유 응모권</span><span class="cv">›</span></div>
@@ -346,54 +465,52 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">3-1. 내 지갑 구성 순서 (변경)</div>
+        <div class="sub-title">4-1. 내 지갑 구성 순서 (변경)</div>
         <div class="flow-box">본인인증 배너 → 보유 티켓 → [신설] 보유 경품 → 보유 응모권</div>
         <p>기프티콘·실물경품은 별도 섹션을 늘리지 않고 <strong>"보유 경품" 단일 영역에 통합</strong>하며, 리스트 아이템의 <strong>타입 뱃지</strong>(기프티콘 / 실물)로 구분한다.</p>
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">3-2. 상태 분기</div>
+        <div class="sub-title">4-2. 노출 범위 · 상태 분기</div>
+        <div class="callout callout-info"><strong>내 지갑은 수령 완료된 경품만</strong> 노출한다. 수령 대기·발표 대기 건은 지갑이 아닌 <strong>경품 응모 현황(§3)</strong>에서 다룬다. 따라서 지갑 카드는 기프티콘 <span class="tag tag-green">사용가능</span>/<span class="tag tag-blue">사용완료</span>/<span class="tag tag-gray">만료</span>, 실물 <span class="tag tag-blue">접수 완료</span>(+제세공과금 <span class="tag tag-purple">확인 중</span>) 상태만 존재한다.</div>
         <table>
           <thead><tr><th style="width:140px;">상태</th><th>노출</th></tr></thead>
           <tbody>
             <tr>
               <td><span class="tag tag-gray">보유 0건</span></td>
-              <td>섹션 헤더 유지 + Empty(타입 A) — "아직 받은 경품이 없어요." 안내 노출. (보유 티켓 빈 상태 패턴과 통일)</td>
+              <td>섹션 헤더 유지 + Empty(타입 A) — "아직 받은 경품이 없어요." (보유 티켓 빈 상태 패턴과 통일)</td>
             </tr>
             <tr>
               <td><span class="tag tag-blue">보유 N건</span></td>
-              <td>경품 카드 리스트 노출. 유효 건 상단, 만료 건 하단 정렬.</td>
+              <td>수령 완료 경품 카드 리스트. 사용가능 상단, 사용완료·만료 하단 정렬.</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">3-3. 리스트 아이템 구성</div>
+        <div class="sub-title">4-3. 리스트 아이템 구성</div>
         <table>
           <thead><tr><th style="width:140px;">요소</th><th>내용</th></tr></thead>
           <tbody>
             <tr><td class="td-label">대표 이미지</td><td><span class="mono">image_url</span> 썸네일 (정사각, radius-12)</td></tr>
             <tr><td class="td-label">타입 뱃지</td><td><span class="tag tag-blue">기프티콘</span> / <span class="tag tag-purple">실물</span></td></tr>
             <tr><td class="td-label">상품명</td><td>1줄 (초과 시 말줄임)</td></tr>
-            <tr><td class="td-label">기한</td><td>기프티콘 <span class="mono">~MM.DD까지</span> · 실물 <span class="mono">MM.DD까지 신청</span> · 임박 시 <span class="tag tag-red">D-N</span> 강조</td></tr>
+            <tr><td class="td-label">기한</td><td>기프티콘 <span class="mono">~MM.DD까지</span> · 실물 <span class="mono">접수 완료</span> · 임박 시 <span class="tag tag-red">D-N</span> 강조</td></tr>
             <tr><td class="td-label">우측</td><td>chevron-right (탭 → 상세 진입)</td></tr>
-            <tr><td class="td-label">만료 처리</td><td>딤(opacity↓) + <span class="tag tag-gray">만료</span> 뱃지, 리스트 하단 정렬</td></tr>
+            <tr><td class="td-label">만료/사용완료</td><td>딤(opacity↓) + <span class="tag tag-gray">만료</span>/<span class="tag tag-blue">사용완료</span> 뱃지, 리스트 하단 정렬</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">3-4. 진입 분기 (타입 × 인증 상태)</div>
-        <div class="flow-box">[기프티콘] 카드 탭
-  └ 본인인증 O → 기프티콘 상세 (WL-02)
-  └ 본인인증 X → 본인인증(MY-07) → 통과 → 기프티콘 상세 (WL-02)
-
-[실물경품] 카드 탭 (수령 대기)
-  └ 실물경품 수령 플로우 (WL-03)
+        <div class="sub-title">4-4. 진입 분기</div>
+        <div class="callout callout-info">지갑 카드는 모두 <strong>수령 완료분</strong>이므로 본인인증·수령 게이트가 없다(수령 단계에서 이미 완료). 탭 시 바로 상세로 진입한다.</div>
+        <div class="flow-box">[기프티콘] 카드 탭 (사용가능/사용완료/만료)
+  └ 기프티콘 상세 (WL-02) — 상태별 코드 영역 분기
 
 [실물경품] 카드 탭 (접수 완료)
-  └ 접수 내역 확인(읽기 전용)</div>
+  └ 접수 내역 확인 (읽기 전용)</div>
       </div>
     </div>
   </div>
@@ -401,17 +518,17 @@
   <!-- 4. WL-02 -->
   <div class="section" id="wl02">
     <div class="section-header">
-      <div class="section-num">4</div>
-      <div><div class="section-title">WL-02 — 기프티콘 상세</div><div class="section-subtitle">바코드형 / 쿠폰번호형 · 유효 / 만료</div></div>
+      <div class="section-num">5</div>
+      <div><div class="section-title">WL-02 — 기프티콘 상세</div><div class="section-subtitle">발급 이후 상세 · 사용가능(바코드/쿠폰번호) → 사용완료 / 만료</div></div>
       <span class="sec-badge">APP</span>
     </div>
     <div class="section-body">
 
       <div class="sub-section">
-        <div class="sub-title">4-0. 화면 미리보기</div>
+        <div class="sub-title">5-0. 화면 미리보기</div>
         <div class="mk"><div class="mk-row">
           <div class="mk-fw">
-            <div class="mk-lab"><span class="d"></span>바코드형 <span class="s">유효 · 딤 제거</span></div>
+            <div class="mk-lab"><span class="d"></span>바코드형 <span class="s">사용가능 · 딤 제거</span></div>
             <div class="phone"><div class="scr">
               <div class="sb"><span>9:41</span><span>▪▪▪ 📶 🔋</span></div>
               <div class="sgnb"><span class="bk">←</span></div>
@@ -458,7 +575,7 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">4-1. 공통 구성</div>
+        <div class="sub-title">5-1. 공통 구성</div>
         <table>
           <thead><tr><th style="width:140px;">영역</th><th>내용</th></tr></thead>
           <tbody>
@@ -473,7 +590,7 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">4-2. 코드 영역 — type 분기</div>
+        <div class="sub-title">5-2. 코드 영역 — type 분기</div>
         <div class="func-card">
           <div class="func-card-hd"><span class="tag tag-blue">type = BARCODE</span> 바코드형</div>
           <div class="func-card-body">
@@ -494,14 +611,22 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">4-3. 유효기간 분기</div>
+        <div class="sub-title">5-3. 상태별 코드 영역 분기 (발급 이후)</div>
+        <div class="callout callout-info">기프티콘 상세는 <strong>발급 완료(사용가능) 이후에만</strong> 진입한다. 수령 대기·확인 중(입금 대기)은 발급 전 상태로, <strong>경품 응모 현황(§3)</strong>에서 다룬다.</div>
         <table>
           <thead><tr><th style="width:120px;">상태</th><th>코드 영역</th><th>비고</th></tr></thead>
           <tbody>
-            <tr><td><span class="tag tag-green">유효</span></td><td>바코드/번호 정상 노출 + 복사하기 활성</td><td>임박(D-N) 시 유효기간 텍스트 강조</td></tr>
-            <tr><td><span class="tag tag-gray">만료</span></td><td>코드 영역 비활성(블러) + "유효기간이 만료된 기프티콘이에요" 안내. 복사하기 비활성.</td><td>리스트에서 진입은 가능(이력 확인)</td></tr>
+            <tr><td><span class="tag tag-green">사용가능</span></td><td>바코드/번호 정상 노출 + 복사하기 활성</td><td>발급 완료 상태. 임박(D-N) 시 유효기간 강조</td></tr>
+            <tr><td><span class="tag tag-blue">사용완료</span></td><td>코드 영역 딤 + "사용 완료된 기프티콘이에요" 안내.</td><td>발급사 API 사용 확인(각주①)</td></tr>
+            <tr><td><span class="tag tag-gray">만료</span></td><td>코드 영역 비활성(블러) + "유효기간이 만료된 기프티콘이에요" 안내. 복사하기 비활성.</td><td>리스트 진입은 가능(이력 확인)</td></tr>
           </tbody>
         </table>
+        <div class="mk-cap">각주① 사용완료는 발급사 API 연동으로 매장 실사용 여부를 받아 표기한다(연동 전제).</div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">5-4. 수령·발급 동선</div>
+        <div class="callout callout-info">수령(받기) → 발급 → 사용가능까지의 동선과 제세공과금(확인 중) 분기는 <strong>§3 수령 동선·경품 응모 현황</strong>에서 정의한다. WL-02는 발급 이후의 상세 표시만 담당한다.</div>
       </div>
     </div>
   </div>
@@ -509,14 +634,14 @@
   <!-- 5. WL-03 -->
   <div class="section" id="wl03">
     <div class="section-header">
-      <div class="section-num">5</div>
+      <div class="section-num">6</div>
       <div><div class="section-title">WL-03 — 실물경품 수령 플로우</div><div class="section-subtitle">동의 → 본인인증 → 배송지 입력 → 접수 완료</div></div>
       <span class="sec-badge">APP</span>
     </div>
     <div class="section-body">
 
       <div class="sub-section">
-        <div class="sub-title">5-0. 화면 미리보기</div>
+        <div class="sub-title">6-0. 화면 미리보기</div>
         <div class="mk"><div class="mk-row">
           <div class="mk-fw">
             <div class="mk-lab"><span class="d"></span>① 개인정보 동의 <span class="s">본인인증 목적</span></div>
@@ -587,23 +712,23 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">5-1. 전체 플로우</div>
-        <div class="flow-box">실물경품 카드 탭
+        <div class="sub-title">6-1. 전체 플로우</div>
+        <div class="flow-box">경품 응모 현황(§3) 당첨 카드 [경품 받기] 또는 당첨 알림
   → ① 개인정보 수집·이용 동의 (본인인증 목적)
   → ② 본인인증 진행 (MY-07, 미완료 시)
   → ③ 배송지 입력 화면
        · 배송지 정보 입력 (수령인 / 연락처 / 주소)
        · 배송지 정보 수집·이용 동의 (체크)
-       · [경품가 5만원 이상] 제세공과금 안내 + 관련 동의 (체크)
-       · 저장(접수)
-  → ④ 접수 완료</div>
+  → [제세공과금 X]  저장(접수) → ④ 접수 완료
+  → [제세공과금 O]  제세공과금 정보 등록(TBD) + 입금 절차 안내 + 관련 동의
+                    → 확인 중(입금 확인 대기) → (입금 확인) → ④ 접수 완료</div>
         <div class="callout callout-info">
-          동의는 <strong>정보를 실제 수집하는 시점</strong>에 받는다. ①은 본인인증(통신사 본인확인) 목적의 동의로 성격이 다르므로 분리하고, 배송지·제세공과금 관련 동의는 ③ 배송지 입력 화면 내에서 입력과 함께 받는다.
+          동의는 <strong>정보를 실제 수집하는 시점</strong>에 받는다. ①은 본인인증(통신사 본인확인) 목적의 동의로 성격이 다르므로 분리하고, 배송지·제세공과금 관련 동의는 ③ 배송지 입력 화면 내에서 입력과 함께 받는다. 제세공과금 발생 시 <strong>입금 확인(확인 중)</strong>을 거쳐 접수 완료된다.
         </div>
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">5-2. ③ 배송지 입력 화면 상세</div>
+        <div class="sub-title">6-2. ③ 배송지 입력 화면 상세</div>
         <table>
           <thead><tr><th style="width:160px;">요소</th><th>내용</th></tr></thead>
           <tbody>
@@ -621,11 +746,12 @@
       </div>
 
       <div class="sub-section">
-        <div class="sub-title">5-3. ④ 접수 완료</div>
+        <div class="sub-title">6-3. ④ 접수 완료 / 확인 중</div>
         <div class="func-card">
           <div class="func-card-body">
-            <div class="feat">접수 완료 안내 + 입력한 배송지 요약 노출</div>
-            <div class="feat">상태값 <span class="tag tag-blue">접수 완료</span>로 전환, 재진입 시 읽기 전용</div>
+            <div class="feat">[제세공과금 X] 저장 즉시 <span class="tag tag-blue">접수 완료</span> + 배송지 요약 노출, 재진입 시 읽기 전용</div>
+            <div class="feat">[제세공과금 O] 정보 등록·입금 안내 후 <span class="tag tag-purple">확인 중</span>(입금 확인 대기) → 입금 확인 시 <span class="tag tag-blue">접수 완료</span>로 전환</div>
+            <div class="feat">"입금 확인 중이에요" 대기 화면까지만 정의. 입금 확인 처리·정보 등록 항목은 <span class="tbd">TBD · 재무팀</span></div>
             <div class="feat">배송중/완료 등 이후 상태 추적은 MVP 제외 (어드민 추후)</div>
           </div>
         </div>
@@ -636,7 +762,7 @@
   <!-- 6. 데이터 -->
   <div class="section" id="data">
     <div class="section-header">
-      <div class="section-num">6</div>
+      <div class="section-num">7</div>
       <div><div class="section-title">데이터 설계 (MVP)</div><div class="section-subtitle">유저 ID ↔ 경품 매핑 테이블</div></div>
     </div>
     <div class="section-body">
@@ -654,8 +780,10 @@
             <tr><td class="mono">expire_at</td><td>기프티콘=사용 유효기간 / 실물=신청 마감 기한</td></tr>
             <tr><td class="mono">caution</td><td>이용안내·유의사항 (텍스트)</td></tr>
             <tr><td class="mono">prize_value</td><td>경품가 — 5만원 이상 시 제세공과금 분기 판정</td></tr>
-            <tr><td class="mono">status</td><td>유효/만료(기프티콘) · 수령대기/접수완료/만료(실물)</td></tr>
-            <tr><td class="mono">created_at</td><td>지급일</td></tr>
+            <tr><td class="mono">status</td><td>기프티콘: 수령대기/확인중/사용가능/사용완료/만료 · 실물: 수령대기/확인중/접수완료/만료</td></tr>
+            <tr><td class="mono">received_at</td><td>유저 [수령하기] 클릭 시각 (이 시점에 발급/코드 할당)</td></tr>
+            <tr><td class="mono">tax_status</td><td>제세공과금: 비대상 / 입금대기(확인중) / 확인완료 — <span class="tbd">처리 TBD</span></td></tr>
+            <tr><td class="mono">created_at</td><td>지급(예약)일</td></tr>
           </tbody>
         </table>
       </div>
@@ -704,7 +832,7 @@
   <!-- 8. 미결 -->
   <div class="section" id="todo">
     <div class="section-header">
-      <div class="section-num">8</div>
+      <div class="section-num">9</div>
       <div><div class="section-title">미결 사항</div><div class="section-subtitle">착수 전·후 확정 필요</div></div>
     </div>
     <div class="section-body">
@@ -717,12 +845,15 @@
           <tr><td>⚠ 배송지 파기 정책</td><td>배송 완료 후 배송지 개인정보 파기 시점 정의.</td><td>기획/법무</td></tr>
           <tr><td>⚠ 바코드 렌더 방식</td><td>code 문자열 → 클라이언트 바코드 렌더 라이브러리/포맷 확정.</td><td>개발팀</td></tr>
           <tr><td>⚠ 실물 만료(마감) 기한 산정</td><td>expire_at(신청 마감) 기본값·운영 기준 확정.</td><td>기획/운영</td></tr>
+          <tr><td><span class="tbd">TBD</span> 제세공과금 정보 등록 항목</td><td>신분증 사본·이름·휴대폰번호 등 예상(주민번호는 본인인증 보유분 활용, 없으면 추가 수집). 재무팀 확인 후 고도화. 이번 버전은 안내·입금 절차·"확인 중" 대기 화면까지만.</td><td>재무팀/법무</td></tr>
+          <tr><td><span class="tbd">TBD</span> 입금 확인 처리</td><td>비동기·수동 확인 전제. 어드민 입금 확인 처리 연동은 재무팀 확인 후 고도화(이번 범위 외).</td><td>재무팀/개발</td></tr>
+          <tr><td>⚠ 기프티콘 사용완료 API</td><td>발급사 API 연동으로 매장 사용 여부 수신(사용완료 상태 전제).</td><td>개발팀</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <footer>기능정의서_보유경품_WL_v1_0 · 2026-06-25 · 참조: 마이_기능정의서_v1.0, 폴리볼_서비스_IA_v1_0, 폴리볼_법령_레퍼런스_v1_0, 폴리볼_디자인가이드_v1</footer>
+  <footer>기능정의서_보유경품_WL_v1_1 · 2026-06-25 · 참조: 마이_기능정의서_v1.0, 폴리볼_서비스_IA_v1_0, 폴리볼_법령_레퍼런스_v1_0, 폴리볼_디자인가이드_v1</footer>
 
 </div>
 </body>
